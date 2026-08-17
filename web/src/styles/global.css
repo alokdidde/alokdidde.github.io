@@ -167,7 +167,7 @@ textarea {
 
 .nav-inner {
   display: flex;
-  min-height: 5.5rem;
+  min-height: 4.9rem;
   align-items: center;
   justify-content: space-between;
   gap: 2rem;
@@ -175,23 +175,28 @@ textarea {
 
 .brand {
   display: inline-flex;
-  align-items: baseline;
-  gap: 0.75rem;
+  align-items: center;
+  gap: 0.8rem;
+  line-height: 1;
   text-decoration: none;
 }
 
 .brand-name {
-  font-family: var(--serif);
-  font-size: 1.45rem;
-  font-weight: 500;
-  letter-spacing: -0.035em;
+  font-family: var(--sans);
+  font-size: 1.18rem;
+  font-weight: 650;
+  letter-spacing: -0.04em;
 }
 
 .brand-note {
+  padding-left: 0.8rem;
+  border-left: 1px solid rgba(21, 40, 44, 0.26);
   color: var(--ink-faint);
   font-family: var(--mono);
-  font-size: 0.52rem;
-  letter-spacing: 0.09em;
+  font-size: 0.48rem;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  line-height: 1.2;
   text-transform: uppercase;
 }
 
@@ -2498,7 +2503,7 @@ html.js [data-reveal].is-visible {
   }
 
   .nav-inner {
-    min-height: 4.6rem;
+    min-height: 4.4rem;
   }
 
   .brand-note {
@@ -2746,7 +2751,7 @@ html.js [data-reveal].is-visible {
 
 @media (max-width: 480px) {
   .brand-name {
-    font-size: 1.2rem;
+    font-size: 1.08rem;
   }
 
   .nav-links a:first-child {
