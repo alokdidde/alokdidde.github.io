@@ -1,0 +1,181 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import WorkIllustration from "../../components/WorkIllustration.astro";
+---
+
+<BaseLayout
+  title="PCBoo: circuit boards as code"
+  description="Why I built PCBoo, an open-source framework for designing circuit boards with coding agents, composable TypeScript, and reviewable engineering evidence."
+>
+  <main class="project-page pcboo-page">
+    <section class="project-hero">
+      <div class="shell">
+        <a class="back-link" href="/#work">← Back to selected work</a>
+        <div class="project-hero-grid">
+          <div class="project-hero-copy">
+            <p class="eyebrow">Selected work / PCBoo</p>
+            <h1>Circuit boards as code. Confidence sold separately.</h1>
+            <p class="project-lede">
+              PCBoo is an experimental open-source framework for building circuit boards with coding agents. The board lives in composable TypeScript. The evidence lives beside it. The agent is allowed to be clever, but not vague.
+            </p>
+            <div class="project-actions">
+              <a class="oval-link" href="https://pcboo-dev.github.io/" target="_blank" rel="noopener noreferrer">Visit PCBoo ↗</a>
+              <a class="arrow-link" href="https://github.com/pcboo-dev/pcboo" target="_blank" rel="noopener noreferrer">Source on GitHub <span>↗</span></a>
+            </div>
+          </div>
+
+          <div class="project-hero-visual" aria-label="Animated PCBoo circuit board diagram">
+            <WorkIllustration id="pcboo-page" visual="pcboo" />
+            <div class="project-visual-caption">
+              <span>BOARD / SOURCE / EVIDENCE</span>
+              <strong>One repository.<br />Fewer magic tricks.</strong>
+            </div>
+          </div>
+        </div>
+
+        <dl class="project-facts">
+          <div><dt>Type</dt><dd>Open-source framework</dd></div>
+          <div><dt>Interface</dt><dd>TypeScript + CLI</dd></div>
+          <div><dt>Foundation</dt><dd>tscircuit</dd></div>
+          <div><dt>Initial target</dt><dd>Apple Silicon macOS</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="project-statement">
+      <div class="shell project-statement-grid">
+        <p class="section-index">01 / Why it exists</p>
+        <div>
+          <h2>Coding agents understand repositories. Electronics still gives them rather a lot to misunderstand.</h2>
+          <div class="project-copy-columns">
+            <p>
+              Software agents already work well with files, commands, tests, diffs, and structured errors. Circuit design often asks them to reason through visual editors, screenshots, and generated output whose confidence can exceed its electrical competence.
+            </p>
+            <p>
+              A plausible application can be patched after deployment. A plausible circuit board may instead arrive in a box, in quantity, looking extremely committed to the mistake. PCBoo was built to bring the useful habits of software engineering into that gap.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="project-system-section">
+      <div class="shell">
+        <header class="project-section-heading">
+          <p class="section-index">02 / What it is</p>
+          <h2>The repository is the interface.</h2>
+          <p>
+            PCBoo is not a new model, a proprietary chat window, or a visual editor wearing an AI hat. It gives any filesystem-capable coding agent a precise project structure and deterministic tools for doing circuit work.
+          </p>
+        </header>
+
+        <div class="project-principles">
+          <article>
+            <span>01</span>
+            <h3>Circuits are composable TypeScript</h3>
+            <p>Boards can be split into named modules, imported, tested, reviewed, and changed with ordinary source-control habits.</p>
+          </article>
+          <article>
+            <span>02</span>
+            <h3>Agents receive exact feedback</h3>
+            <p>Stable diagnostics, coordinates, nets, measurements, and machine-readable reports are more useful than asking a model to admire a render.</p>
+          </article>
+          <article>
+            <span>03</span>
+            <h3>Humans keep the visual evidence</h3>
+            <p>A local inspection server provides schematic, board, layer, measurement, and report views without uploading the project by default.</p>
+          </article>
+          <article>
+            <span>04</span>
+            <h3>Readiness remains inconveniently specific</h3>
+            <p>Fabrication, electrical, functional, standards, and sourcing states remain separate. One green light is not permitted to breed.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="project-workflow-section">
+      <div class="shell project-workflow-grid">
+        <div class="project-workflow-intro">
+          <p class="section-index">03 / The loop</p>
+          <h2>Write. Build. Inspect. Prove.</h2>
+          <p>The workflow is deliberately unsurprising. That is a compliment in engineering.</p>
+        </div>
+
+        <ol class="project-workflow-list">
+          <li>
+            <span>01</span>
+            <div><h3>Compose the board</h3><p>Define the circuit across small TypeScript modules with explicit configuration, constraints, and tests.</p></div>
+          </li>
+          <li>
+            <span>02</span>
+            <div><h3>Let the agent edit normal files</h3><p>Use Codex, Claude Code, Cursor, or another coding agent. PCBoo does not require a ceremonial new chat interface.</p></div>
+          </li>
+          <li>
+            <span>03</span>
+            <div><h3>Run deterministic commands</h3><p>Build twice, check the circuit, run tests, inspect structured results, and repair what actually failed.</p></div>
+          </li>
+          <li>
+            <span>04</span>
+            <div><h3>Produce reviewable evidence</h3><p>Generate bounded reports and manufacturing artifacts, or hand the project to KiCad when specialist adjustment is the sensible answer.</p></div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="project-origin-section">
+      <div class="shell project-origin-grid">
+        <p class="section-index">04 / Why I built it</p>
+        <div>
+          <h2>Hardware needed a stricter definition of “done”.</h2>
+          <p class="project-origin-lede">
+            I wanted to see whether a general coding agent could work on electronics through the interface it already understands best: a repository.
+          </p>
+          <div class="project-copy-columns">
+            <p>
+              The interesting problem was not generating a board-shaped object. Generators are very good at producing objects shaped like answers. The harder problem was building a loop where the agent receives precise failures, the human can inspect the result, and neither is invited to confuse a successful export with a successful design.
+            </p>
+            <p>
+              PCBoo therefore treats reproducibility, provenance, bounded tools, and honest status language as product features. It is less dazzling than a demo which announces that the board is perfect. It is also considerably cheaper than discovering otherwise after fabrication.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="project-truth-section">
+      <div class="shell project-truth-grid">
+        <div>
+          <p class="section-index">05 / Current truth</p>
+          <h2>Experimental means experimental.</h2>
+        </div>
+        <div class="project-truth-copy">
+          <p>
+            The initial release targets Apple Silicon macOS and a fixed Bun version. It is built on tscircuit and is an independent project, not an official tscircuit product. Support is intentionally conservative while the verification boundaries are proved.
+          </p>
+          <p>
+            PCBoo does not certify a board, replace qualified engineering review, or make arbitrary generated hardware safe. High-voltage, RF, medical, automotive, aerospace, and other regulated work remain excellent places to involve an experienced electrical engineer rather than a particularly enthusiastic terminal.
+          </p>
+          <ul>
+            <li>Open source under the MIT licence</li>
+            <li>Local and telemetry-free by default</li>
+            <li>Built on the supported tscircuit implementation</li>
+            <li>KiCad available as a detached handoff</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="project-cta-section">
+      <div class="shell project-cta-grid">
+        <p class="section-index">Explore the project</p>
+        <h2>Build a board. Keep the receipts.</h2>
+        <div class="project-cta-actions">
+          <a class="oval-link oval-link-large" href="https://pcboo-dev.github.io/" target="_blank" rel="noopener noreferrer">Open PCBoo ↗</a>
+          <a class="arrow-link" href="https://docs.page/pcboo-dev/pcboo" target="_blank" rel="noopener noreferrer">Read the documentation <span>↗</span></a>
+          <a class="arrow-link" href="https://github.com/pcboo-dev/pcboo" target="_blank" rel="noopener noreferrer">Browse the source <span>↗</span></a>
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>

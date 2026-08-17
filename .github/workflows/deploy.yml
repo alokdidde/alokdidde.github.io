@@ -1,0 +1,48 @@
+name: Deploy Astro to GitHub Pages
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+  repository_dispatch:
+    types: [sanity-publish]
+  schedule:
+    # Refresh CMS content even if a webhook has not been configured yet.
+    - cron: "17 */3 * * *"
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      PUBLIC_SANITY_PROJECT_ID: ${{ vars.PUBLIC_SANITY_PROJECT_ID || 'f7bffmxv' }}
+      PUBLIC_SANITY_DATASET: ${{ vars.PUBLIC_SANITY_DATASET || 'production' }}
+      SITE_URL: ${{ vars.SITE_URL || 'https://alokdidde.github.io' }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Install, build, and upload Astro site
+        uses: withastro/action@v6
+        with:
+          path: ./web
+          node-version: 24
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

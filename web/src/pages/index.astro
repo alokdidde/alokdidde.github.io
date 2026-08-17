@@ -1,0 +1,208 @@
+---
+import { Image } from "astro:assets";
+import heroWorkshop from "../assets/hero-workshop.png";
+import HeroSystemArt from "../components/HeroSystemArt.astro";
+import WorkIllustration from "../components/WorkIllustration.astro";
+import { otherBuilds, selectedWork, site, workingQuestions } from "../data/site";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getPosts } from "../lib/posts";
+
+const posts = (await getPosts()).slice(0, 3);
+const formatDate = (value: string) =>
+  new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(value));
+---
+
+<BaseLayout>
+  <section class="hero hero-editorial">
+    <div class="ambient-glow hero-glow-a" aria-hidden="true"></div>
+    <div class="ambient-glow hero-glow-b" aria-hidden="true"></div>
+
+    <div class="shell hero-editorial-grid">
+      <div class="hero-copy-block">
+        <p class="eyebrow">Robotics / AI / Systems</p>
+        <h1>
+          Robots,<br />intelligent systems,<br />and the infrastructure<br />between them.
+        </h1>
+        <p class="hero-copy">
+          Selected work across open robotics, physical AI, healthcare platforms,
+          and retrieval systems—built by <span>Alok Didde</span>.
+        </p>
+        <div class="hero-actions">
+          <a class="oval-link" href="#work">Explore the work</a>
+          <a class="arrow-link" href="#writing">Read the notes <span>↗</span></a>
+        </div>
+      </div>
+
+      <div class="hero-collage" aria-label="Illustrations of Alok and his robotics work">
+        <figure class="cutout cutout-arch" id="hero-art" data-float="slow">
+          <HeroSystemArt />
+        </figure>
+        <figure class="cutout cutout-disc" data-float="reverse">
+          <Image
+            src={heroWorkshop}
+            alt="Alok soldering electronics beside a 3D printer in his workshop"
+            widths={[480, 720, 960, 1200, 1448]}
+            sizes="(max-width: 800px) 78vw, 38vw"
+            format="webp"
+            quality={92}
+            loading="eager"
+          />
+        </figure>
+      </div>
+    </div>
+
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker-track">
+        <span>OPEN ROBOTICS</span><i>✳</i><span>PHYSICAL AI</span><i>✳</i><span>HEALTHCARE SYSTEMS</span><i>✳</i><span>RETRIEVAL BEYOND EMBEDDINGS</span><i>✳</i>
+        <span>OPEN ROBOTICS</span><i>✳</i><span>PHYSICAL AI</span><i>✳</i><span>HEALTHCARE SYSTEMS</span><i>✳</i><span>RETRIEVAL BEYOND EMBEDDINGS</span><i>✳</i>
+      </div>
+    </div>
+  </section>
+
+  <section class="work-section" id="work">
+    <div class="shell">
+      <header class="section-heading" data-reveal>
+        <div>
+          <p class="section-index">01 / Selected work</p>
+          <h2>Things made,<br />tested, and learned from.</h2>
+        </div>
+        <p>
+          Systems are most interesting at their edges: where software meets
+          hardware, models meet messy data, and prototypes meet actual use.
+        </p>
+      </header>
+
+      <div class="work-list">
+        {selectedWork.map((work, index) => (
+          <article id={`work-${work.number}`} class:list={["work-card", { "work-card-reverse": index % 2 === 1 }]} data-reveal>
+            <div class="work-visual-wrap">
+              <div class={`work-visual work-shape-${work.shape}`}>
+                <WorkIllustration id={`project-${work.number}`} visual={work.visual} />
+              </div>
+              <span class="work-figure">Fig. {work.number}</span>
+            </div>
+
+            <div class="work-content">
+              <div class="work-meta">
+                <span>{work.category}</span>
+                <span>{work.status}</span>
+              </div>
+              <h3>{work.title}</h3>
+              <p class="work-summary">{work.summary}</p>
+              <p class="work-detail">{work.detail}</p>
+              <ul class="tag-list" aria-label="Technologies and themes">
+                {work.tags.map((tag) => <li>{tag}</li>)}
+              </ul>
+              {work.href && (
+                <a class="work-case-link" href={work.href}>Read the project story <span aria-hidden="true">↗</span></a>
+              )}
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <div class="other-builds" id="more-work" data-reveal>
+        <div class="other-builds-heading">
+          <p class="section-index">More things shipped</p>
+          <p>Smaller in footprint, complete enough to use.</p>
+        </div>
+        <div class="other-builds-grid">
+          {otherBuilds.map((project) => (
+            <a href={project.href} target="_blank" rel="noopener noreferrer" class="other-build-card">
+              <div class="other-build-topline">
+                <span>{project.label}</span>
+                <span aria-hidden="true">↗</span>
+              </div>
+              <h3>{project.title}</h3>
+              <p>{project.description}</p>
+              <ul class="tag-list" aria-label="Technologies and themes">
+                {project.tags.map((tag) => <li>{tag}</li>)}
+              </ul>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="questions-section" id="questions">
+    <div class="ambient-glow questions-glow" aria-hidden="true"></div>
+    <div class="shell questions-grid">
+      <div class="questions-intro" data-reveal>
+        <p class="section-index">02 / Working questions</p>
+        <h2>The thoughts behind the work.</h2>
+        <p>
+          Not declarations. Questions worth keeping open long enough to build
+          something around them.
+        </p>
+      </div>
+
+      <div class="question-list">
+        {workingQuestions.map((item) => (
+          <article class="question-card" data-reveal>
+            <span>{item.index}</span>
+            <div>
+              <h3>{item.question}</h3>
+              <p>{item.note}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="writing-section" id="writing">
+    <div class="shell">
+      <header class="section-heading writing-heading" data-reveal>
+        <div>
+          <p class="section-index">03 / Field notes</p>
+          <h2>Ideas in public.</h2>
+        </div>
+        <a class="oval-link" href="/blog">All writing</a>
+      </header>
+
+      <div class="home-post-list">
+        {posts.map((post, index) => (
+          <a class="home-post" href={`/blog/${post.slug}`} data-reveal>
+            <span class="home-post-number">0{index + 1}</span>
+            <div>
+              <h3>{post.title}</h3>
+              <p>{post.summary}</p>
+            </div>
+            <time datetime={post.publishedAt}>{formatDate(post.publishedAt)}</time>
+            <span class="home-post-arrow" aria-hidden="true">↗</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="signal-section">
+    <div class="shell signal-grid" data-reveal>
+      <div>
+        <p class="section-index">A short signal</p>
+        <h2>Fourteen years building software. Now applying that scar tissue to robots.</h2>
+      </div>
+      <dl>
+        <div><dt>Focus</dt><dd>Open robotics + physical AI</dd></div>
+        <div><dt>Background</dt><dd>Healthcare and distributed systems</dd></div>
+        <div><dt>Training</dt><dd>MSc Robotics, Queen Mary</dd></div>
+        <div><dt>Based</dt><dd>United Kingdom</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="contact-section">
+    <div class="ambient-glow contact-glow" aria-hidden="true"></div>
+    <div class="shell contact-grid" data-reveal>
+      <p class="section-index">04 / Contact</p>
+      <h2>Building something at the edge of software and the physical world?</h2>
+      <a class="oval-link oval-link-large" href={`mailto:${site.email}`}>Let’s talk ↗</a>
+    </div>
+  </section>
+</BaseLayout>

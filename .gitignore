@@ -25,3 +25,23 @@ build/Release
 # Dependency directory
 # https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
 node_modules
+
+# Astro build output
+dist
+.astro
+
+# Local environment files
+.env
+.env.*
+!.env.example
+
+# Sanity Studio build output
+studio/dist
+studio/.sanity
+studio/schema.json
+
+# Editor and operating-system files
+.DS_Store
+.idea
+.vscode
+.screenshots

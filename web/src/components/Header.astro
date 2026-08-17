@@ -1,0 +1,31 @@
+---
+import { site } from "../data/site";
+
+const pathname = Astro.url.pathname;
+const isHome = pathname === "/";
+---
+
+<header class="site-header" data-site-header data-scrolled="false">
+  <div class="shell nav-inner">
+    <a class="brand" href="/" aria-label={`${site.name}, home`}>
+      <span class="brand-name">{site.name}</span>
+      <span class="brand-note">robots + systems</span>
+    </a>
+
+    <nav class="nav-links" aria-label="Primary navigation">
+      <a href={isHome ? "#work" : "/#work"}>Work</a>
+      <a href="/blog" aria-current={pathname.startsWith("/blog") ? "page" : undefined}>Writing</a>
+      <a href={`mailto:${site.email}`}>Contact <span aria-hidden="true">↗</span></a>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const header = document.querySelector<HTMLElement>("[data-site-header]");
+  const updateHeader = () => {
+    header?.setAttribute("data-scrolled", String(window.scrollY > 18));
+  };
+
+  updateHeader();
+  window.addEventListener("scroll", updateHeader, { passive: true });
+</script>

@@ -1,0 +1,44 @@
+---
+type Source = {
+  mediaType: "video" | "article" | "document";
+  title: string;
+  publisher: string;
+  url: string;
+  note: string;
+};
+
+type Props = Source | { node: Source };
+const props = Astro.props as Props;
+const source = "node" in props ? props.node : props;
+---
+
+<a class="source-card" data-media={source.mediaType} href={source.url} target="_blank" rel="noreferrer noopener">
+  <span class="source-icon" aria-hidden="true">
+    {source.mediaType === "video" ? (
+      <svg viewBox="0 0 64 64">
+        <circle cx="32" cy="32" r="29" />
+        <path class="source-icon-fill" d="m27 21 17 11-17 11Z" />
+      </svg>
+    ) : source.mediaType === "document" ? (
+      <svg viewBox="0 0 64 64">
+        <path d="M17 6h22l10 11v41H17Z" />
+        <path d="M39 6v12h10M24 29h18M24 37h18M24 45h12" />
+      </svg>
+    ) : (
+      <svg viewBox="0 0 64 64">
+        <path d="M13 12h38v40H13Z" />
+        <path d="M21 22h22M21 30h22M21 38h15" />
+        <circle class="source-icon-fill" cx="44" cy="44" r="9" />
+        <path class="source-icon-invert" d="m41 44 2 2 5-6" />
+      </svg>
+    )}
+  </span>
+  <span class="source-content">
+    <span class="source-meta">{source.mediaType} · {source.publisher}</span>
+    <strong>{source.title}</strong>
+    <span class="source-note">{source.note}</span>
+  </span>
+  <svg class="source-arrow" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M5 19 19 5M8 5h11v11" />
+  </svg>
+</a>
