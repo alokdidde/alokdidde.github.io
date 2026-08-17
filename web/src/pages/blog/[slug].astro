@@ -1,0 +1,87 @@
+---
+import { PortableText } from "astro-portabletext";
+import { render } from "astro:content";
+import PortableImage from "../../components/PortableImage.astro";
+import CaseStudyMarker from "../../components/article/CaseStudyMarker.astro";
+import SourceCard from "../../components/article/SourceCard.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getLocalEntry, getPosts, type BlogPost } from "../../lib/posts";
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+type Props = { post: BlogPost };
+const { post } = Astro.props;
+let LocalContent: Awaited<ReturnType<typeof render>>["Content"] | undefined;
+
+if (post.source === "local") {
+  const entry = await getLocalEntry(post.id);
+  if (!entry) {
+    throw new Error(`Local blog entry not found: ${post.id}`);
+  }
+  ({ Content: LocalContent } = await render(entry));
+}
+
+const portableBody = post.body as Parameters<typeof PortableText>[0]["value"];
+const portableComponents = {
+  type: {
+    image: PortableImage,
+    caseStudyMarker: CaseStudyMarker,
+    sourceCard: SourceCard,
+  },
+};
+const formatDate = (value: string) =>
+  new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(value));
+---
+
+<BaseLayout
+  title={post.title}
+  description={post.summary}
+  image={post.imageUrl}
+  article
+  publishedAt={post.publishedAt}
+  updatedAt={post.updatedAt}
+>
+  <article class="measure page-main">
+    <a class="back-link" href="/blog">← All writing</a>
+    <header class="article-header">
+      <time class="post-date" datetime={post.publishedAt}>
+        {formatDate(post.publishedAt)}
+      </time>
+      <h1>{post.title}</h1>
+      <p class="article-summary">{post.summary}</p>
+      {post.tags.length > 0 && (
+        <div class="tag-row" aria-label="Tags">
+          {post.tags.map((tag) => <span class="tag">{tag}</span>)}
+        </div>
+      )}
+    </header>
+
+    {post.imageUrl && (
+      <img
+        class="article-image"
+        src={post.imageUrl}
+        alt={post.imageAlt || ""}
+        loading="eager"
+      />
+    )}
+
+    <div class="prose">
+      {LocalContent ? (
+        <LocalContent />
+      ) : (
+        <PortableText value={portableBody} components={portableComponents} />
+      )}
+    </div>
+  </article>
+</BaseLayout>

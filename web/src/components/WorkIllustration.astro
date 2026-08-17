@@ -1,0 +1,185 @@
+---
+type Visual = "overview" | "robotics" | "agriculture" | "retrieval" | "pcboo" | "healthcare";
+
+interface Props {
+  id: string;
+  visual: Visual;
+}
+
+const { id, visual } = Astro.props;
+---
+
+<svg class="work-illustration" data-visual={visual} viewBox="0 0 640 520" preserveAspectRatio="xMidYMid slice" role="img">
+  <title>
+    {visual === "overview" && "Animated abstract diagram of interconnected intelligent systems"}
+    {visual === "robotics" && "Animated diagram of a modular robot system"}
+    {visual === "agriculture" && "Animated diagram of an autonomous agricultural robot"}
+    {visual === "retrieval" && "Animated diagram of exploratory information retrieval"}
+    {visual === "pcboo" && "Animated technical diagram of a circuit board designed as code"}
+    {visual === "healthcare" && "Animated diagram of connected healthcare systems"}
+  </title>
+  <defs>
+    <linearGradient id={`visual-wash-${id}`} x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="var(--visual-a)" />
+      <stop offset="1" stop-color="var(--visual-b)" />
+    </linearGradient>
+    <filter id={`visual-glow-${id}`} x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" />
+    </filter>
+  </defs>
+
+  <rect class="visual-paper" width="640" height="520" />
+  <path
+    class="visual-blob"
+    style={`fill: url(#visual-wash-${id})`}
+    d="M72 107C139 17 302 3 434 47c123 40 183 149 134 258-48 107-187 179-330 145C95 417 9 322 29 220c8-42 22-80 43-113Z"
+  />
+  <circle class="visual-orbit" cx="331" cy="257" r="191" />
+
+  {visual === "overview" && (
+    <g class="visual-symbol visual-overview">
+      <path class="visual-dash" d="M77 313c48-94 126-153 226-166 105-13 195 28 264 124" />
+      <path class="visual-flow" d="M100 351C183 264 248 318 320 246c72-72 143-24 220-108" />
+
+      <g class="visual-core">
+        <circle class="visual-core-halo" cx="320" cy="254" r="88" />
+        <circle class="visual-fill" cx="320" cy="254" r="58" />
+        <path d="M320 208l40 23v46l-40 23-40-23v-46Z" />
+        <circle cx="320" cy="254" r="14" />
+        <path d="M320 166v-35M408 254h35M320 342v35M232 254h-35" />
+      </g>
+
+      <g class="visual-module visual-module-a">
+        <rect class="visual-fill" x="84" y="115" width="104" height="76" rx="22" />
+        <circle cx="115" cy="153" r="10" />
+        <path d="M140 143h27M140 162h18" />
+      </g>
+      <g class="visual-module visual-module-b">
+        <rect class="visual-fill" x="449" y="96" width="108" height="78" rx="22" />
+        <path d="M475 135h57M503 111v48" />
+      </g>
+      <g class="visual-module visual-module-c">
+        <rect class="visual-fill" x="83" y="348" width="112" height="78" rx="22" />
+        <path d="M105 388l24-21 19 14 25-24M105 405h67" />
+      </g>
+      <g class="visual-module visual-module-d">
+        <rect class="visual-fill" x="452" y="346" width="106" height="78" rx="22" />
+        <circle cx="479" cy="385" r="9" />
+        <circle cx="530" cy="371" r="9" />
+        <path d="M488 382l33-9M479 394l33 13" />
+      </g>
+
+      <path d="M188 153l68 55M449 151l-65 58M195 380l65-66M452 382l-70-66" />
+      <circle class="visual-signal" cx="256" cy="208" r="7" />
+      <circle class="visual-signal visual-signal-b" cx="384" cy="209" r="7" />
+      <circle class="visual-signal visual-signal-c" cx="260" cy="314" r="7" />
+      <circle class="visual-signal visual-signal-d" cx="382" cy="316" r="7" />
+    </g>
+  )}
+
+  {visual === "robotics" && (
+    <g class="visual-symbol">
+      <g class="visual-float">
+        <rect class="visual-fill" x="222" y="112" width="218" height="147" rx="48" />
+        <circle cx="280" cy="180" r="15" />
+        <circle cx="380" cy="180" r="15" />
+        <path d="M308 222h44M331 112V70M313 70h36" />
+        <path d="M255 259v97c0 48 28 76 76 76s76-28 76-76v-97" />
+        <path d="M255 294l-91 66-25 72M407 294l91 66 25 72" />
+      </g>
+      <g class="visual-chip">
+        <rect x="86" y="245" width="88" height="73" rx="10" />
+        <path d="M103 264h53M103 282h35M103 300h44M72 260h14M72 280h14M72 300h14M174 260h14M174 280h14M174 300h14" />
+      </g>
+    </g>
+  )}
+
+  {visual === "agriculture" && (
+    <g class="visual-symbol">
+      <path class="visual-dash" d="M41 392c103-95 205-115 307-65 73 36 133 23 246-55" />
+      <path d="M35 431c133-82 261-93 384-31 62 31 119 25 183-17" />
+      <g class="visual-float">
+        <path class="visual-fill" d="M193 231h213l-24 102H211z" />
+        <circle cx="239" cy="348" r="35" />
+        <circle cx="362" cy="348" r="35" />
+        <path d="M244 231v-66h109v66M269 165v-39h59v39M353 196l79-52 38 17M429 147l47-37" />
+        <circle cx="481" cy="106" r="13" />
+      </g>
+      <g class="visual-plant">
+        <path d="M121 386v-121M121 302c-39-8-54-31-60-60 38 2 59 20 60 60ZM121 337c40-7 58-31 65-60-39 1-62 22-65 60Z" />
+      </g>
+      <path class="visual-scan" d="M435 94l71 79-118 36Z" />
+    </g>
+  )}
+
+  {visual === "retrieval" && (
+    <g class="visual-symbol">
+      <path d="M103 270l100-103 115 90 113-137 106 133M318 257l81 133" />
+      <path class="visual-dash" d="M72 403c73-27 115-69 158-116 47-52 94-79 162-108" />
+      <g class="visual-node visual-node-a"><circle class="visual-fill" cx="103" cy="270" r="28" /><circle cx="103" cy="270" r="8" /></g>
+      <g class="visual-node visual-node-b"><circle class="visual-fill" cx="203" cy="167" r="35" /><circle cx="203" cy="167" r="10" /></g>
+      <g class="visual-node visual-node-c"><circle class="visual-fill" cx="318" cy="257" r="43" /><circle cx="318" cy="257" r="12" /></g>
+      <g class="visual-node visual-node-d"><circle class="visual-fill" cx="431" cy="120" r="28" /><circle cx="431" cy="120" r="8" /></g>
+      <g class="visual-node visual-node-e"><circle class="visual-fill" cx="537" cy="253" r="34" /><circle cx="537" cy="253" r="10" /></g>
+      <circle class="visual-target" cx="399" cy="390" r="27" />
+      <circle class="visual-target" cx="399" cy="390" r="13" />
+    </g>
+  )}
+
+  {visual === "pcboo" && (
+    <g class="visual-symbol visual-pcboo">
+      <rect class="visual-board" x="78" y="72" width="484" height="376" rx="26" />
+      <g class="visual-board-mounts">
+        <g transform="translate(110 106)"><circle r="11" /><circle r="4" /></g>
+        <g transform="translate(530 106)"><circle r="11" /><circle r="4" /></g>
+        <g transform="translate(110 414)"><circle r="11" /><circle r="4" /></g>
+        <g transform="translate(530 414)"><circle r="11" /><circle r="4" /></g>
+      </g>
+      <g class="visual-board-traces">
+        <path d="M181 171h60v41h49M181 194h34v118h75M391 192h45v-58h52M391 239h91v83M332 301v77h106" />
+        <path class="visual-dash" d="M181 218h78v22h31M391 271h55v70h43" />
+      </g>
+      <g class="visual-board-vias">
+        <circle cx="241" cy="212" r="5" /><circle cx="215" cy="312" r="5" />
+        <circle cx="436" cy="192" r="5" /><circle cx="482" cy="239" r="5" />
+        <circle cx="332" cy="378" r="5" /><circle cx="229" cy="267" r="5" />
+      </g>
+      <g class="visual-board-chip visual-board-chip-main">
+        <rect class="visual-fill" x="290" y="161" width="101" height="140" rx="8" />
+        <path d="M307 184h67M307 205h48M307 257h67M307 278h38" />
+        <circle cx="341" cy="231" r="9" />
+      </g>
+      <g class="visual-board-chip">
+        <rect class="visual-fill" x="125" y="145" width="56" height="95" rx="7" />
+        <path d="M139 168h28M139 190h20M139 212h28" />
+        <rect class="visual-fill" x="438" y="112" width="72" height="58" rx="7" />
+        <path d="M452 133h43M452 150h27" />
+        <rect class="visual-fill" x="438" y="322" width="72" height="58" rx="7" />
+        <path d="M452 343h43M452 360h27" />
+      </g>
+      <g class="visual-board-pins">
+        <path d="M280 179h10M280 199h10M280 219h10M280 239h10M280 259h10M280 279h10M391 179h10M391 199h10M391 219h10M391 239h10M391 259h10M391 279h10" />
+      </g>
+    </g>
+  )}
+
+  {visual === "healthcare" && (
+    <g class="visual-symbol">
+      <path class="visual-dash" d="M65 414h89l25-45 36 65 31-52 24 32h113" />
+      <g class="visual-float">
+        <rect class="visual-fill" x="207" y="102" width="247" height="294" rx="32" />
+        <path d="M258 173h145M258 216h90M258 302h145M258 343h113" />
+        <path d="M356 250h47M379 227v47" />
+      </g>
+      <g class="visual-card visual-card-left">
+        <rect class="visual-fill" x="67" y="131" width="120" height="86" rx="18" />
+        <circle cx="105" cy="169" r="15" />
+        <path d="M133 159h31M133 181h22" />
+      </g>
+      <g class="visual-card visual-card-right">
+        <rect class="visual-fill" x="470" y="333" width="111" height="79" rx="18" />
+        <path d="M494 373h63M526 350v46" />
+      </g>
+    </g>
+  )}
+</svg>

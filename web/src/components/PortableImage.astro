@@ -1,0 +1,36 @@
+---
+import type { SanityImageSource } from "@sanity/image-url";
+import { urlForImage } from "../lib/posts";
+
+type Props = {
+  node: {
+    asset?: { _ref?: string };
+    alt?: string;
+    caption?: string;
+    dimensions?: { width?: number; height?: number };
+  };
+};
+
+const { node } = Astro.props;
+const imageUrl = node.asset?._ref
+  ? urlForImage(node as SanityImageSource)
+      .width(1440)
+      .fit("max")
+      .auto("format")
+      .quality(86)
+      .url()
+  : undefined;
+---
+
+{imageUrl && (
+  <figure class="portable-image">
+    <img
+      src={imageUrl}
+      alt={node.alt || ""}
+      width={node.dimensions?.width}
+      height={node.dimensions?.height}
+      loading="lazy"
+    />
+    {node.caption && <figcaption>{node.caption}</figcaption>}
+  </figure>
+)}

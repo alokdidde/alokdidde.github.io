@@ -1,0 +1,94 @@
+<svg
+  class="hero-system-art"
+  viewBox="0 0 520 720"
+  preserveAspectRatio="xMidYMid slice"
+  role="img"
+  aria-labelledby="hero-robot-title"
+>
+  <title id="hero-robot-title">A softly animated industrial robotic arm</title>
+  <defs>
+    <linearGradient id="hero-robot-paper" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#faf5e9" />
+      <stop offset="1" stop-color="#e7ece2" />
+    </linearGradient>
+    <radialGradient id="hero-robot-field" cx="0.65" cy="0.3" r="0.86">
+      <stop offset="0" stop-color="#93d8d0" stop-opacity="0.96" />
+      <stop offset="0.55" stop-color="#a9c9dd" stop-opacity="0.9" />
+      <stop offset="1" stop-color="#e8c36f" stop-opacity="0.78" />
+    </radialGradient>
+    <linearGradient id="hero-robot-arm" x1="0.1" y1="1" x2="0.88" y2="0.12">
+      <stop offset="0" stop-color="#f6f1e6" />
+      <stop offset="0.58" stop-color="#eaf4ed" />
+      <stop offset="1" stop-color="#c3e4db" />
+    </linearGradient>
+    <radialGradient id="hero-robot-orb" cx="0.35" cy="0.28" r="0.8">
+      <stop offset="0" stop-color="#fff5c7" />
+      <stop offset="0.44" stop-color="#efc15c" />
+      <stop offset="1" stop-color="#d58f1e" />
+    </radialGradient>
+    <filter id="hero-robot-glow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="10" />
+    </filter>
+  </defs>
+
+  <rect width="520" height="720" fill="url(#hero-robot-paper)" />
+
+  <path
+    class="hero-robot-field"
+    d="M66 158C115 49 300 22 414 95c101 65 124 206 63 309-62 106-63 221-183 255-122 35-242-47-258-165-14-100 45-166 41-243-3-38-28-60-11-93Z"
+    fill="url(#hero-robot-field)"
+  />
+  <circle class="hero-robot-halo" cx="278" cy="336" r="218" />
+
+  <g class="hero-robot-object">
+    <circle class="hero-robot-object-glow" cx="426" cy="170" r="34" />
+    <circle class="hero-robot-object-ring" cx="426" cy="170" r="28" />
+    <circle class="hero-robot-object-core" cx="426" cy="170" r="17" fill="url(#hero-robot-orb)" />
+  </g>
+
+  <g class="hero-robot-base">
+    <ellipse cx="158" cy="625" rx="105" ry="19" />
+    <path d="M77 574h158l23 51H54l23-51Z" />
+    <path d="M98 503h109l28 71H77l21-71Z" />
+    <circle cx="111" cy="599" r="5" />
+    <circle cx="133" cy="599" r="5" />
+    <circle cx="155" cy="599" r="5" />
+  </g>
+
+  <g class="hero-robot-arm">
+    <path class="hero-robot-link hero-robot-link-lower" d="M152 511 251 353" />
+    <path class="hero-robot-link-accent hero-robot-link-accent-lower" d="M152 511 251 353" />
+
+    <path class="hero-robot-link hero-robot-link-upper" d="m251 353 118-76" />
+    <path class="hero-robot-link-accent hero-robot-link-accent-upper" d="m251 353 118-76" />
+
+    <g class="hero-robot-joint hero-robot-joint-shoulder" transform="translate(152 511)">
+      <circle class="hero-robot-joint-shell" r="47" />
+      <circle class="hero-robot-joint-ring" r="27" />
+      <circle class="hero-robot-joint-core" r="11" />
+    </g>
+
+    <g class="hero-robot-joint hero-robot-joint-elbow" transform="translate(251 353)">
+      <circle class="hero-robot-joint-shell" r="40" />
+      <circle class="hero-robot-joint-ring" r="23" />
+      <circle class="hero-robot-joint-core" r="9" />
+    </g>
+
+    <g class="hero-robot-joint hero-robot-joint-wrist" transform="translate(369 277)">
+      <circle class="hero-robot-joint-shell" r="30" />
+      <circle class="hero-robot-joint-ring" r="16" />
+      <circle class="hero-robot-joint-core" r="6" />
+    </g>
+
+    <g class="hero-robot-gripper" transform="translate(369 277)">
+      <path class="hero-robot-gripper-neck" d="m18-13 34-25" />
+      <circle class="hero-robot-gripper-joint" cx="55" cy="-40" r="13" />
+      <path class="hero-robot-gripper-claw" d="m65-48 26-15 13 5M65-32l27 10 11-8" />
+    </g>
+  </g>
+
+  <g class="hero-robot-sparks">
+    <path d="M457 116v21M447 126h21" />
+    <path d="m472 140 12-12M472 128l12 12" />
+  </g>
+</svg>

@@ -1,0 +1,50 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getPosts, sanityConfigured } from "../../lib/posts";
+
+const posts = await getPosts();
+const formatDate = (value: string) =>
+  new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(value));
+---
+
+<BaseLayout
+  title="Blog"
+  description="Field notes about robotics, engineering, AI, and building in the open."
+>
+  <div class="measure page-main">
+    <header class="page-header">
+      <p class="section-label">Field notes / ideas / experiments</p>
+      <h1>Writing</h1>
+      <p class="page-intro">
+        Notes from the workshop: robotics, software, AI, and whatever I’m learning
+        while building in the open.
+      </p>
+    </header>
+
+    <div class="post-list">
+      {posts.map((post) => (
+        <a class="post-card" href={`/blog/${post.slug}`}>
+          <time class="post-date" datetime={post.publishedAt}>
+            {formatDate(post.publishedAt)}
+          </time>
+          <div>
+            <h2>{post.title}</h2>
+            <p>{post.summary}</p>
+          </div>
+          <span class="post-arrow" aria-hidden="true">↗</span>
+        </a>
+      ))}
+
+      {posts.length === 0 && (
+        <p class="empty-state">
+          Nothing here yet. {sanityConfigured ? "The first draft is still in the workshop." : "Working on it."}
+        </p>
+      )}
+    </div>
+  </div>
+</BaseLayout>

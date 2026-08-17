@@ -1,0 +1,100 @@
+---
+type Topic = "autonomy" | "hyperloop" | "tunnels" | "robotics";
+
+type Marker = {
+  topic: Topic;
+  number: string;
+  title: string;
+  promise: string;
+  reality: string;
+};
+
+type Props = Marker | { node: Marker };
+
+const props = Astro.props as Props;
+const marker = "node" in props ? props.node : props;
+const topicLabels: Record<Topic, string> = {
+  autonomy: "Self-driving",
+  hyperloop: "Hyperloop",
+  tunnels: "Tunnels",
+  robotics: "AI + robots",
+};
+---
+
+<section class="case-study-marker" id={`case-${marker.topic}`} data-topic={marker.topic} aria-label={`Case ${marker.number}: ${marker.title}`}>
+  <div class="case-study-copy">
+    <p class="case-study-kicker">{marker.number} / {topicLabels[marker.topic]}</p>
+    <h2>{marker.title}</h2>
+    <dl>
+      <div>
+        <dt>The promise</dt>
+        <dd>{marker.promise}</dd>
+      </div>
+      <div>
+        <dt>What arrived</dt>
+        <dd>{marker.reality}</dd>
+      </div>
+    </dl>
+  </div>
+
+  <svg class="case-study-art" viewBox="0 0 480 360" aria-hidden="true">
+    <defs>
+      <linearGradient id={`case-gradient-${marker.topic}`} x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="var(--case-wash-a)" />
+        <stop offset="1" stop-color="var(--case-wash-b)" />
+      </linearGradient>
+    </defs>
+    <path class="case-blob" d="M55 87C98 18 213 3 316 35c97 31 151 117 116 198-35 81-136 130-245 105C77 312 10 238 23 165c5-30 16-55 32-78Z" />
+    <circle class="case-orbit" cx="239" cy="180" r="137" />
+    <circle class="case-orbit case-orbit-small" cx="239" cy="180" r="104" />
+
+    {marker.topic === "autonomy" && (
+      <g class="case-symbol case-car">
+        <path d="M55 283c72-31 82-86 129-111 45-24 96-15 134-52 28-26 29-57 35-83" />
+        <path d="M82 305c66-29 87-81 130-103 46-23 98-12 134-53 19-21 24-46 28-68" />
+        <g transform="translate(219 146) rotate(-20)">
+          <path class="case-fill" d="M-50 17h100l-11-35-29-18h-40l-23 20Z" />
+          <circle cx="-29" cy="22" r="10" />
+          <circle cx="31" cy="22" r="10" />
+        </g>
+        <path class="case-dash" d="M111 272c42-25 57-61 91-78 47-23 89-7 125-46" />
+      </g>
+    )}
+
+    {marker.topic === "hyperloop" && (
+      <g class="case-symbol case-tube">
+        <path d="M45 116h390v128H45z" />
+        <ellipse cx="45" cy="180" rx="21" ry="64" />
+        <ellipse cx="435" cy="180" rx="21" ry="64" />
+        <path class="case-fill" d="M150 151h166c24 0 43 13 54 29-11 17-30 29-54 29H150c-24 0-39-10-50-29 11-18 26-29 50-29Z" />
+        <path class="case-dash" d="M91 180h279" />
+        <circle cx="179" cy="180" r="13" />
+        <circle cx="291" cy="180" r="13" />
+      </g>
+    )}
+
+    {marker.topic === "tunnels" && (
+      <g class="case-symbol case-tunnels">
+        <path d="M62 305V179C62 95 127 41 207 41s145 54 145 138v126" />
+        <path d="M102 305V184c0-61 45-102 105-102s105 41 105 102v121" />
+        <path d="M0 305h480" />
+        <path class="case-fill" d="M150 263h118l-13-40-31-17h-43l-27 19Z" />
+        <circle cx="179" cy="270" r="12" />
+        <circle cx="244" cy="270" r="12" />
+        <path class="case-dash" d="M112 305V184c0-55 40-92 95-92s95 37 95 92v121" />
+      </g>
+    )}
+
+    {marker.topic === "robotics" && (
+      <g class="case-symbol case-robot">
+        <rect class="case-fill" x="163" y="72" width="154" height="105" rx="38" />
+        <circle cx="207" cy="122" r="11" />
+        <circle cx="273" cy="122" r="11" />
+        <path d="M221 151h38M240 72V40M226 40h28" />
+        <path d="M188 177v86c0 35 20 58 52 58s52-23 52-58v-86" />
+        <path d="M188 202l-58 49-19 54M292 202l58 49 19 54M218 321l-20 27M262 321l20 27" />
+        <path class="case-dash" d="M126 97c-45 28-62 75-43 116M354 97c45 28 62 75 43 116" />
+      </g>
+    )}
+  </svg>
+</section>

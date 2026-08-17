@@ -1,0 +1,23 @@
+{
+  "name": "alokdidde-blog-studio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "sanity dev",
+    "start": "sanity start",
+    "build": "sanity build",
+    "deploy": "sanity deploy",
+    "deploy:schema": "sanity schemas deploy",
+    "setup:cors": "sanity cors add http://localhost:4321 --credentials",
+    "typegen": "sanity schemas extract --force --enforce-required-fields && sanity typegen generate"
+  },
+  "dependencies": {
+    "@sanity/icons": "^5.2.1",
+    "@sanity/vision": "^6.9.2",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "sanity": "^6.9.2",
+    "styled-components": "^6.1.19"
+  }
+}
