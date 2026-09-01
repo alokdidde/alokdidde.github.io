@@ -24,7 +24,7 @@ export const selectedWork = [
     summary:
       "A framework for moving from an idea to working hardware without rebuilding the same infrastructure every time.",
     detail:
-      "The aim is practical: composable software, firmware, and hardware interfaces that are understandable enough to change—and solid enough to build on.",
+      "It defines clear interfaces across software, firmware, and hardware so each layer can change without rebuilding the rest.",
     tags: ["C++", "TypeScript", "Real-time", "Open source"],
     visual: "robotics",
     shape: "arch",
@@ -52,7 +52,7 @@ export const selectedWork = [
     category: "MSc Robotics project",
     status: "Built 2024",
     summary:
-      "An autonomous agricultural platform combining spatial reconstruction, visual pest detection, and robotic-arm control.",
+      "An autonomous agricultural platform combining spatial reconstruction, visual pest detection, and robot arm control.",
     detail:
       "Gaussian Splatting informed navigation, CNNs handled pest detection, and forward/inverse kinematics drove precise manipulation.",
     tags: ["Gaussian Splatting", "Computer vision", "Kinematics"],
@@ -69,7 +69,7 @@ export const selectedWork = [
     summary:
       "A retrieval approach that uses Monte Carlo exploration to search a corpus rather than depending entirely on vector similarity.",
     detail:
-      "In early experiments it reached roughly 80% recall on the target task, compared with under 20% for the embedding baseline. The interesting part is not the number—it is the search behaviour behind it.",
+      "Early experiments reached roughly 80% recall on the target task, compared with under 20% for the embedding baseline. The experiment examines the search behaviour behind that gap.",
     tags: ["RAG", "Monte Carlo search", "LLMs"],
     visual: "retrieval",
     shape: "soft-square",
@@ -77,14 +77,14 @@ export const selectedWork = [
   },
   {
     number: "05",
-    title: "Healthcare systems designed for the messy real world",
+    title: "Healthcare systems built around clinical constraints",
     shortTitle: "Healthcare platforms",
     category: "Software systems",
     status: "Production systems",
     summary:
-      "Clinical platforms, remote patient monitoring, real-time communication, claims workflows, and AI-assisted document systems.",
+      "Clinical platforms, remote patient monitoring, real-time communication, claims workflows, and document systems assisted by AI.",
     detail:
-      "Work across startups and scaled healthcare companies shaped how I think about reliability: the difficult part is rarely the happy path.",
+      "Work across startups and scaled healthcare companies focused on reliability beyond the happy path.",
     tags: ["Distributed systems", "Healthcare", "Applied AI"],
     visual: "healthcare",
     shape: "diamond",
@@ -101,11 +101,11 @@ export const workingQuestions = [
   {
     index: "B",
     question: "What changes when retrieval explores instead of ranks?",
-    note: "Search may need strategies, memory, and backtracking—not only a better embedding.",
+    note: "Search may need strategies, memory, and backtracking alongside better embeddings.",
   },
   {
     index: "C",
-    question: "What makes open hardware genuinely extensible?",
+    question: "What makes open hardware extensible in practice?",
     note: "Documentation and interfaces matter as much as a downloadable CAD file.",
   },
 ] as const;
@@ -115,7 +115,7 @@ export const otherBuilds = [
     title: "Ganglia",
     label: "Adaptive memory for AI agents",
     description:
-      "A TypeScript memory engine combining BM25, embeddings, recency, and feedback with per-query adaptive weighting and an L1/L2/L3 memory hierarchy.",
+      "A TypeScript memory engine combining BM25, embeddings, recency, and feedback with adaptive weighting for each query and an L1/L2/L3 memory hierarchy.",
     href: "https://github.com/alokdidde/ganglia",
     tags: ["Agent memory", "Hybrid search", "TypeScript"],
   },
@@ -123,7 +123,7 @@ export const otherBuilds = [
     title: "Saarathi",
     label: "Business intelligence through WhatsApp",
     description:
-      "A working assistant for Indian micro-businesses: transaction capture, cash-flow forecasts, payroll, collections, and proactive alerts through a familiar interface.",
+      "A working assistant for small Indian businesses: transaction capture, cash flow forecasts, payroll, collections, and proactive alerts through a familiar interface.",
     href: "https://github.com/alokdidde/Saarathi",
     tags: ["AI agents", "Fintech", "WhatsApp"],
   },
