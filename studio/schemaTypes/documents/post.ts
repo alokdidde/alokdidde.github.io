@@ -131,6 +131,7 @@ export const post = defineType({
           ],
         }),
         defineArrayMember({ type: "caseStudyMarker" }),
+        defineArrayMember({ type: "systemStage" }),
         defineArrayMember({ type: "sourceCard" }),
       ],
       validation: (rule) => rule.required(),

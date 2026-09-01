@@ -1,0 +1,221 @@
+---
+title: "A robot should be able to search its own map"
+summary: "Mark Gaussian splats with object identity, retrieve the relevant scene evidence, and let geometry handle the drive."
+publishedAt: 2026-08-21
+tags:
+  - robotics
+  - gaussian-splatting
+  - navigation
+  - retrieval
+  - spatial-ai
+draft: false
+---
+
+import SourceCard from "../../components/article/SourceCard.astro";
+import SystemStage from "../../components/article/SystemStage.astro";
+
+A robot can build a photorealistic map of a room and still fail to find the charger.
+
+That is the awkward gap between reconstruction and understanding. Gaussian splatting can turn camera observations into a detailed 3D scene that renders quickly from new viewpoints. Object recognition can name things in an image. Retrieval can search a memory using ordinary language. Navigation can move a robot towards coordinates while avoiding the furniture.
+
+Each part is useful. Shared evidence lets the system turn a language request into a location it can verify.
+
+The idea is to treat a Gaussian map as spatial memory. Splats belonging to a recognised object receive an object ID. The object record stores its labels, visual features, position, extent, relationships, observation history and confidence. A retrieval layer searches those records when somebody says, “Go to the charger beside the workbench.” It returns a small set of grounded candidates. A geometric planner then chooses an approach pose and finds a safe route.
+
+The language model does not drive. It is not given custody of the wheel encoders. Its job is to help interpret the request and select evidence from the map.
+
+The papers cover these components separately. Gaussian Splatting SLAM systems build maps online. LangSplat places language features in splats. Go-SLAM assigns object identities to splats and queries them for navigation. ConceptGraphs builds object-centred spatial memory. EmbodiedRAG retrieves the useful part of that memory for a planner. The proposal here puts those ideas behind one interface.
+
+<SystemStage
+  stage="mapping"
+  number="01"
+  title="Build a scene from observations"
+  input="Posed RGB or RGB-D frames from the robot as it moves through the environment."
+  output="A Gaussian map with position, scale, orientation, colour, opacity and observation support."
+/>
+
+## A useful map should remember what it saw
+
+A 3D Gaussian is a small, soft ellipsoid in space. A scene contains many of them. Each carries geometric and appearance parameters, and the renderer projects them into an image. Overlapping splats produce a continuous view rather than a collection of lonely points.
+
+The original 3D Gaussian Splatting work was aimed at novel-view rendering. Given calibrated images, it optimised a set of Gaussians that could reproduce the scene at interactive rates. The result looked unusually good and rendered quickly. It was a representation for appearance, not a navigation system.
+
+Robotics needs the map to arrive while the camera is moving. SplaTAM, Gaussian Splatting SLAM and GS-SLAM showed different ways to estimate camera pose and update Gaussian maps online. SplaTAM used RGB-D input and a silhouette to identify mapped and unmapped regions. Gaussian Splatting SLAM demonstrated monocular tracking directly against the Gaussian representation.
+
+This gives the robot a dense, explicit scene that can be rendered and updated. It also gives us somewhere to attach evidence.
+
+Every Gaussian already has an identity in memory. Extend that record with the observations that created or updated it: frame ID, camera pose, depth support, segmentation mask, time and confidence. The map can then answer two questions. What does the scene currently look like? Why does the system believe this object is here?
+
+The second question is more useful when the mug has moved and the robot is confidently admiring yesterday’s mug.
+
+<SourceCard
+  mediaType="document"
+  publisher="ACM Transactions on Graphics"
+  title="3D Gaussian Splatting for Real-Time Radiance Field Rendering"
+  url="https://doi.org/10.1145/3592433"
+  note="The original 3D Gaussian Splatting work and project material for an explicit scene representation with fast rendering."
+/>
+
+<SourceCard
+  mediaType="article"
+  publisher="CVPR 2024"
+  title="SplaTAM: Splat, Track and Map 3D Gaussians for Dense RGB-D SLAM"
+  url="https://openaccess.thecvf.com/content/CVPR2024/html/Keetha_SplaTAM_Splat_Track__Map_3D_Gaussians_for_Dense_RGB-D_CVPR_2024_paper.html"
+  note="An online tracking and mapping system that builds a Gaussian scene from an unposed RGB-D camera."
+/>
+
+<SystemStage
+  stage="recognition"
+  number="02"
+  title="Give the splats object membership"
+  input="Multi-view object masks, open-vocabulary features and geometric overlap across observations."
+  output="Stable object records linked to the splats that support them, with labels, confidence and last-seen time."
+/>
+
+## Mark the splats, not only the pixels
+
+An object detector sees a kettle in one frame. The robot needs to know that the kettle seen from the other side is the same object, and that a glint on its lid is not a newly discovered appliance.
+
+For each camera frame, an open-vocabulary detector can propose objects and a segmentation model can produce their masks. The camera pose and depth project those masks into the Gaussian map. Splats inside the projected mask become evidence for an object instance. Later views either reinforce that object, split a mistaken merge or create a new one.
+
+The association should use several signals together:
+
+1. Geometric overlap between the new mask and an existing splat cluster.
+2. Similarity between visual or language features.
+3. Agreement in size, position and observation time.
+4. A threshold below which the system keeps the detection unassigned.
+
+“I do not know yet” is a valid map entry. Keeping uncertain detections unassigned prevents the nearest chair from quietly collecting every unexplained pixel in the room.
+
+LangSplat showed that Gaussians can carry compact language features and support open-vocabulary queries in 3D. It used Segment Anything to improve boundaries and a scene-specific autoencoder to reduce the memory cost of language embeddings. Go-SLAM went closer to the object representation described here by assigning each Gaussian a unique object identifier, then using those identities for natural-language object lookup and path generation.
+
+I would keep two linked layers. The splat layer contains dense appearance and geometry. The object layer contains the smaller records used for search and planning. A mug might own 4,000 supporting splats, but the retrieval index needs one object record with a centroid, extent, likely labels, nearby objects and links back to those splats.
+
+That separation avoids asking a language model to read several million ellipsoids. It has probably had a difficult enough morning.
+
+<SourceCard
+  mediaType="article"
+  publisher="CVPR 2024"
+  title="LangSplat: 3D Language Gaussian Splatting"
+  url="https://openaccess.thecvf.com/content/CVPR2024/html/Qin_LangSplat_3D_Language_Gaussian_Splatting_CVPR_2024_paper.html"
+  note="Language features are distilled into 3D Gaussians so the scene can answer open-vocabulary spatial queries efficiently."
+/>
+
+<SourceCard
+  mediaType="document"
+  publisher="Go-SLAM"
+  title="Grounded Object Segmentation and Localization with Gaussian Splatting SLAM"
+  url="https://arxiv.org/abs/2409.16944"
+  note="This work assigns object identifiers to Gaussian splats, supports natural-language lookup and generates paths towards queried objects."
+/>
+
+<SystemStage
+  stage="retrieval"
+  number="03"
+  title="Ask the map before asking the model"
+  input="A request such as ‘the charger beside the workbench’ plus the robot’s current task and position."
+  output="A small ranked subgraph of candidate objects, relations, observations and grounded 3D locations."
+/>
+
+## Retrieval is the index, not the driver
+
+Suppose the map contains six chargers, two workbenches and one object that the vision model has described as either a power supply or a small grey lunchbox.
+
+A plain vector search for “charger” may return all seven. A useful query also contains a relationship: beside the workbench. It may contain history: the one used yesterday. It may imply an affordance: a charger compatible with this robot. The retrieval system needs object attributes, spatial edges and observation records, not a bag of captions.
+
+ConceptGraphs provides a useful shape for this memory. It turns objects into nodes with geometric and semantic features, then adds edges for relationships between them. The graph is much smaller than the dense map and can represent facts such as `charger-3 beside workbench-1` while retaining a link to the underlying 3D evidence.
+
+The retrieval step can combine exact filters, graph traversal and embedding similarity. First constrain by what can be checked: object state, floor, room, recency, distance and compatibility. Then rank the surviving candidates against the language request. Return the relevant nodes, their relations, confidence and supporting observations.
+
+EmbodiedRAG applies this principle to robot task planning. Rather than handing an entire 3D scene graph to a language model, it retrieves a task-relevant subgraph and updates that retrieval as the task changes. The authors report a large reduction in tokens and planning time in simulation, then demonstrate the method on a quadruped with an onboard planner. Their hardware results are also a useful warning. Real trials remained difficult. A smaller prompt does not repair bad perception, weak manipulation or a chair placed with malice.
+
+RAG is helpful here because the map may grow beyond what a planner should inspect at once. It also creates a boundary around the evidence. The planner sees the objects and relations retrieved from the robot’s own observations. It can request more information, but it cannot improve an uncertain coordinate by writing a persuasive paragraph about it.
+
+<SourceCard
+  mediaType="document"
+  publisher="ConceptGraphs"
+  title="Open-Vocabulary 3D Scene Graphs for Perception and Planning"
+  url="https://arxiv.org/abs/2309.16650"
+  note="An object-centred 3D representation that fuses multi-view detections and stores semantic and spatial relationships for planning."
+/>
+
+<SourceCard
+  mediaType="document"
+  publisher="Johns Hopkins APL"
+  title="EmbodiedRAG: Dynamic 3D Scene Graph Retrieval for Robot Task Planning"
+  url="https://arxiv.org/abs/2410.23968"
+  note="A retrieval layer selects task-relevant scene subgraphs for an LLM planner and updates them as the plan changes."
+/>
+
+<SystemStage
+  stage="navigation"
+  number="04"
+  title="Language chooses the destination. Geometry chooses the route."
+  input="A retrieved object with supporting splats, a 3D extent, candidate approach poses and current sensor data."
+  output="A collision-checked goal passed to the navigation stack, with re-observation when the evidence is stale."
+/>
+
+## Turn a phrase into a safe goal
+
+Retrieving an object is not the same as navigating to it. The centre of a fridge is a perfectly valid 3D coordinate and a poor destination for a mobile robot.
+
+The target object needs one or more approach poses. These depend on the robot, the task and free space. A camera inspection may stop a metre away with the object visible. Manipulation may need the base close enough for the arm to reach. A drone needs a viewpoint that does not coincide with a lampshade.
+
+The system should derive candidate poses around the object’s extent, reject occupied or unreachable ones, and score the rest for visibility and task suitability. A conventional global planner can route through an occupancy or traversability map. The local controller uses current sensors to avoid collisions and replan.
+
+Gaussian splats can contribute geometry, but a photorealistic render is not a safety certificate. Splats model appearance and density. Thin structures, reflective surfaces, unseen space and transient objects can all produce confident-looking mistakes. A navigation stack still needs conservative free-space estimation and live obstacle sensing.
+
+The handoff could be deliberately boring:
+
+1. Retrieve likely object records from the semantic index.
+2. Check the best candidate against recent camera observations.
+3. Ask the robot to look again if confidence or recency is too low.
+4. Generate approach poses from the object extent and task.
+5. Validate them against traversability and current sensor data.
+6. Send the selected pose to the navigation stack.
+
+The language model may help resolve “the charger beside the workbench”. It should not decide that a glossy patch is free floor because the sentence would be neater that way.
+
+## What the object record should contain
+
+The object record is the join between rendering, retrieval and motion. I would store:
+
+1. A stable object ID and the IDs of its supporting splats.
+2. Label hypotheses, language and visual embeddings, and their confidence.
+3. A 3D centroid, extent, orientation and candidate approach poses.
+4. Observation history with timestamps, camera poses and source masks.
+5. Relations to rooms, surfaces and nearby objects.
+6. State such as movable, open, occupied or last seen.
+7. A version number so retrieval results can be invalidated after map updates.
+
+The record should keep conflicting evidence rather than averaging it into false certainty. If one view says mug and another says plant pot, preserve both until another observation settles the matter. Robots will encounter many objects that are, from the correct angle, clearly buckets.
+
+The retrieval index can store a text representation of this record alongside structured fields. Hybrid search then handles both precise constraints and vague language. Graph edges answer “beside the workbench”. Embeddings help with “the thing we use to charge the inspection robot”. Recency answers “where did we last see it”. Geometry supplies the location.
+
+## Where the system will fail
+
+### Object identities will split and merge
+
+Multi-view association is imperfect. One chair may become three records. Two similar boxes may become one. Moving objects make this worse because yesterday’s geometry remains plausible. The system needs merge and split operations, visibility reasoning and time-aware confidence.
+
+### Labels will be wrong
+
+Open-vocabulary recognition broadens what the robot can query, but it does not make the recognition correct. Small, transparent and reflective objects remain difficult. The map should expose confidence and source observations so the robot can verify a candidate before committing to it.
+
+### Retrieval will find the wrong truth
+
+RAG reduces the amount of scene memory shown to a planner. A poor retrieval query can omit the one object that matters. Return several candidates, measure recall, and allow the planner to broaden or reformulate the search. Retrieval quality should be tested separately from planning quality.
+
+### The world will change
+
+A semantic map decays. People move chairs, shut doors and borrow chargers with the casual hostility of an uncooperative benchmark. Object records need timestamps and local updates. Before the final approach, the robot should observe the target area again.
+
+## Build the memory between perception and control
+
+The design depends on a clear division of responsibility.
+
+Gaussian splats preserve dense spatial and visual evidence. Object recognition groups that evidence into things. A scene graph records where those things are and how they relate. Retrieval selects the small part of the scene that matters for the request. The navigation stack converts a grounded target into safe motion.
+
+No single model needs to hold the room, understand every object, interpret the instruction and drive the robot at once. Each layer can be inspected and tested on its own. When the robot goes to the wrong charger, we can ask whether recognition, association, retrieval or planning failed instead of blaming a mysterious end-to-end mood.
+
+The robot should be able to search what it has seen. It should also be able to show why it believes the answer and look again before moving.

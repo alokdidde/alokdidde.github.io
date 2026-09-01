@@ -2070,6 +2070,28 @@ textarea {
   border-radius: 7rem 7rem 0.5rem 0.5rem / 4rem 4rem 0.5rem 0.5rem;
 }
 
+.system-stage[data-stage="mapping"] {
+  --case-wash-a: #c6ece7;
+  --case-wash-b: #6bbfc2;
+}
+
+.system-stage[data-stage="recognition"] {
+  --case-wash-a: #b8d7a7;
+  --case-wash-b: #478b91;
+  border-radius: 7rem 7rem 0.5rem 0.5rem / 4rem 4rem 0.5rem 0.5rem;
+}
+
+.system-stage[data-stage="retrieval"] {
+  --case-wash-a: #f0c36d;
+  --case-wash-b: #83cdd0;
+  border-radius: 10rem 0.5rem 10rem 0.5rem / 5rem 0.5rem 5rem 0.5rem;
+}
+
+.system-stage[data-stage="navigation"] {
+  --case-wash-a: #83cdd0;
+  --case-wash-b: #d6a45c;
+}
+
 .case-study-copy {
   position: relative;
   z-index: 2;
@@ -2184,6 +2206,35 @@ textarea {
   animation: case-dash 14s linear infinite;
 }
 
+.stage-blob {
+  opacity: 0.72;
+  stroke: none;
+  animation: case-breathe 10s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.stage-splats ellipse,
+.stage-marked-splats circle {
+  fill: rgba(250, 247, 238, 0.62);
+  animation: stage-pulse 5.5s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.stage-splats ellipse:nth-child(2n),
+.stage-marked-splats circle:nth-child(2n) {
+  animation-delay: -2.2s;
+}
+
+.stage-marked-splats circle,
+.stage-result {
+  fill: rgba(240, 195, 109, 0.9);
+}
+
+.stage-route {
+  animation-duration: 9s;
+}
+
 .source-card {
   display: grid;
   align-items: center;
@@ -2272,6 +2323,11 @@ textarea {
 
 @keyframes case-dash {
   to { stroke-dashoffset: -180; }
+}
+
+@keyframes stage-pulse {
+  0%, 100% { opacity: 0.62; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.12); }
 }
 
 @keyframes visual-float {

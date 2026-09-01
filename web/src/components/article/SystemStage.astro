@@ -1,0 +1,110 @@
+---
+type Stage = "mapping" | "recognition" | "retrieval" | "navigation";
+
+type SystemStage = {
+  stage: Stage;
+  number: string;
+  title: string;
+  input: string;
+  output: string;
+};
+
+type Props = SystemStage | { node: SystemStage };
+
+const props = Astro.props as Props;
+const item = "node" in props ? props.node : props;
+const stageLabels: Record<Stage, string> = {
+  mapping: "Map",
+  recognition: "Mark",
+  retrieval: "Retrieve",
+  navigation: "Move",
+};
+---
+
+<section class="case-study-marker system-stage" data-stage={item.stage} aria-label={`Stage ${item.number}: ${item.title}`}>
+  <div class="case-study-copy">
+    <p class="case-study-kicker">{item.number} / {stageLabels[item.stage]}</p>
+    <h2>{item.title}</h2>
+    <dl>
+      <div>
+        <dt>What goes in</dt>
+        <dd>{item.input}</dd>
+      </div>
+      <div>
+        <dt>What stays</dt>
+        <dd>{item.output}</dd>
+      </div>
+    </dl>
+  </div>
+
+  <svg class="case-study-art system-stage-art" viewBox="0 0 480 360" aria-hidden="true">
+    <defs>
+      <linearGradient id={`stage-gradient-${item.stage}`} x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="var(--case-wash-a)" />
+        <stop offset="1" stop-color="var(--case-wash-b)" />
+      </linearGradient>
+    </defs>
+    <path class="stage-blob" fill={`url(#stage-gradient-${item.stage})`} d="M55 87C98 18 213 3 316 35c97 31 151 117 116 198-35 81-136 130-245 105C77 312 10 238 23 165c5-30 16-55 32-78Z" />
+    <circle class="case-orbit" cx="239" cy="180" r="137" />
+    <circle class="case-orbit case-orbit-small" cx="239" cy="180" r="104" />
+
+    {item.stage === "mapping" && (
+      <g class="case-symbol stage-symbol stage-map">
+        <path class="case-fill" d="M66 105h72v54H66z" />
+        <circle cx="102" cy="132" r="11" />
+        <path d="m138 116 77 35M138 148l77 33" />
+        <g class="stage-splats">
+          <ellipse cx="248" cy="116" rx="24" ry="12" transform="rotate(-18 248 116)" />
+          <ellipse cx="302" cy="137" rx="30" ry="15" transform="rotate(12 302 137)" />
+          <ellipse cx="235" cy="178" rx="27" ry="13" transform="rotate(19 235 178)" />
+          <ellipse cx="291" cy="190" rx="25" ry="12" transform="rotate(-11 291 190)" />
+          <ellipse cx="341" cy="177" rx="22" ry="11" transform="rotate(24 341 177)" />
+          <ellipse cx="261" cy="230" rx="30" ry="14" transform="rotate(-8 261 230)" />
+          <ellipse cx="326" cy="232" rx="28" ry="13" transform="rotate(17 326 232)" />
+        </g>
+        <path class="case-dash" d="M180 278c51-29 121-34 190-7" />
+      </g>
+    )}
+
+    {item.stage === "recognition" && (
+      <g class="case-symbol stage-symbol stage-recognition">
+        <path class="case-fill" d="M191 86h88l10 47v116c0 20-16 36-36 36h-36c-20 0-36-16-36-36V133Z" />
+        <path d="M203 86V59h65v27M181 133h108" />
+        <rect x="163" y="44" width="144" height="258" rx="42" />
+        <g class="stage-marked-splats">
+          <circle cx="210" cy="160" r="8" />
+          <circle cx="252" cy="148" r="6" />
+          <circle cx="229" cy="196" r="9" />
+          <circle cx="260" cy="220" r="7" />
+          <circle cx="210" cy="245" r="6" />
+        </g>
+        <path class="case-dash" d="M116 102c27-43 65-69 113-79M354 265c-28 42-65 66-112 74" />
+      </g>
+    )}
+
+    {item.stage === "retrieval" && (
+      <g class="case-symbol stage-symbol stage-retrieval">
+        <rect class="case-fill" x="55" y="72" width="167" height="57" rx="28" />
+        <circle cx="88" cy="100" r="10" />
+        <path d="M111 91h77M111 108h48M222 100h53" />
+        <path d="m275 100 35-38M275 100l49 50M275 100l-3 102" />
+        <circle class="case-fill" cx="330" cy="48" r="28" />
+        <circle class="case-fill stage-result" cx="345" cy="168" r="35" />
+        <circle class="case-fill" cx="272" cy="232" r="28" />
+        <path class="case-dash" d="M91 274c67 39 184 50 278 6" />
+        <path d="m330 168 11 11 22-27" />
+      </g>
+    )}
+
+    {item.stage === "navigation" && (
+      <g class="case-symbol stage-symbol stage-navigation">
+        <path d="M74 68h112v74h72v-39h148v189H291v-66H181v66H74Z" />
+        <circle class="case-fill" cx="115" cy="253" r="27" />
+        <path d="M104 253h22M115 242v22" />
+        <path class="case-dash stage-route" d="M115 224c8-51 39-65 83-65h67c43 0 53-34 86-34 30 0 36 27 36 55" />
+        <path class="case-fill" d="m387 183-23-39h46Z" />
+        <circle cx="387" cy="185" r="11" />
+      </g>
+    )}
+  </svg>
+</section>

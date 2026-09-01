@@ -4,6 +4,7 @@ import { render } from "astro:content";
 import PortableImage from "../../components/PortableImage.astro";
 import CaseStudyMarker from "../../components/article/CaseStudyMarker.astro";
 import SourceCard from "../../components/article/SourceCard.astro";
+import SystemStage from "../../components/article/SystemStage.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getLocalEntry, getPosts, type BlogPost } from "../../lib/posts";
 
@@ -33,6 +34,7 @@ const portableComponents = {
     image: PortableImage,
     caseStudyMarker: CaseStudyMarker,
     sourceCard: SourceCard,
+    systemStage: SystemStage,
   },
 };
 const formatDate = (value: string) =>
