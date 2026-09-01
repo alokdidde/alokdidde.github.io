@@ -5,7 +5,7 @@ import WorkIllustration from "../../components/WorkIllustration.astro";
 
 <BaseLayout
   title="Fulmetry: build circuit boards with coding agents"
-  description="Why I built Fulmetry, an open-source framework for authoring circuit boards with coding agents, composable TypeScript, deterministic checks, simulations, and reviewable manufacturing evidence."
+  description="Fulmetry lets coding agents author circuit boards as TypeScript, run physical checks and simulations, inspect the result locally, and prepare manufacturing files."
 >
   <main class="project-page fulmetry-page">
     <section class="project-hero">
@@ -28,13 +28,13 @@ import WorkIllustration from "../../components/WorkIllustration.astro";
             <WorkIllustration id="fulmetry-page" visual="fulmetry" />
             <div class="project-visual-caption">
               <span>DESCRIBE / BUILD / REVIEW</span>
-              <strong>You steer.<br />The agent builds.</strong>
+              <strong>Human review.<br />Agent implementation.</strong>
             </div>
           </div>
         </div>
 
         <dl class="project-facts">
-          <div><dt>Type</dt><dd>Open-source framework</dd></div>
+          <div><dt>Type</dt><dd>Open source framework</dd></div>
           <div><dt>Interface</dt><dd>TypeScript + CLI</dd></div>
           <div><dt>Foundation</dt><dd>tscircuit</dd></div>
           <div><dt>Initial target</dt><dd>Apple Silicon macOS</dd></div>
@@ -65,7 +65,7 @@ import WorkIllustration from "../../components/WorkIllustration.astro";
           <p class="section-index">02 / What it is</p>
           <h2>The repository is the interface.</h2>
           <p>
-            Fulmetry is not a new model, a proprietary chat window, or a visual editor wearing an AI hat. It gives any filesystem-capable coding agent a precise project structure, project-local skills, and deterministic tools for doing circuit work.
+            Fulmetry works through a repository. Any coding agent that can read and edit project files can use its commands, skills stored with the project, and structured diagnostics to do circuit work.
           </p>
         </header>
 
@@ -78,7 +78,7 @@ import WorkIllustration from "../../components/WorkIllustration.astro";
           <article>
             <span>02</span>
             <h3>Checks and simulations stay distinct</h3>
-            <p>Physical checks catch connectivity and fabrication problems. Named ngspice simulations test behaviour. A pass in one column is not permitted to wander into another.</p>
+            <p>Physical checks catch connectivity and fabrication problems. Named ngspice simulations test behaviour. Their results stay separate, so one pass cannot mask a failure elsewhere.</p>
           </article>
           <article>
             <span>03</span>
@@ -87,8 +87,8 @@ import WorkIllustration from "../../components/WorkIllustration.astro";
           </article>
           <article>
             <span>04</span>
-            <h3>Readiness remains inconveniently specific</h3>
-            <p>Fabrication, electrical, functional, standards, and sourcing states remain separate. One green light is not permitted to breed.</p>
+            <h3>Readiness has several states</h3>
+            <p>Fabrication, electrical, functional, standards, and sourcing results remain separate. Each status reports only the checks that produced it.</p>
           </article>
         </div>
       </div>
@@ -98,8 +98,8 @@ import WorkIllustration from "../../components/WorkIllustration.astro";
       <div class="shell project-workflow-grid">
         <div class="project-workflow-intro">
           <p class="section-index">03 / The loop</p>
-          <h2>Describe. Build. Test. Prove.</h2>
-          <p>The workflow is deliberately unsurprising. That is a compliment in engineering.</p>
+          <h2>From requirements to manufacturing files.</h2>
+          <p>The loop resembles a software project: edit the source, build it, inspect failures, and repeat.</p>
         </div>
 
         <ol class="project-workflow-list">
@@ -109,15 +109,15 @@ import WorkIllustration from "../../components/WorkIllustration.astro";
           </li>
           <li>
             <span>02</span>
-            <div><h3>Let the agent edit normal files</h3><p>Use Codex, Claude Code, Cursor, or another filesystem-capable agent. Fulmetry does not require a ceremonial new chat interface.</p></div>
+            <div><h3>Let the agent edit normal files</h3><p>Codex, Claude Code, Cursor, and other coding agents work through the project files and commands they already understand.</p></div>
           </li>
           <li>
             <span>03</span>
-            <div><h3>Build, check, and simulate</h3><p>Compile the board, run physical checks, execute named simulations, inspect structured results, and repair what actually failed.</p></div>
+            <div><h3>Build, check, and simulate</h3><p>Compile the board, run physical checks, execute named simulations, inspect structured results, and repair the reported fault.</p></div>
           </li>
           <li>
             <span>04</span>
-            <div><h3>Prepare manufacturing evidence</h3><p>Generate and independently verify Gerber, drill, BOM, placement, and KiCad handoff files when the board is genuinely ready for that conversation.</p></div>
+            <div><h3>Prepare manufacturing evidence</h3><p>After reviewing the checks and simulations, generate and verify the Gerber, drill, BOM, placement, and KiCad handoff files.</p></div>
           </li>
         </ol>
       </div>
@@ -133,10 +133,10 @@ import WorkIllustration from "../../components/WorkIllustration.astro";
           </p>
           <div class="project-copy-columns">
             <p>
-              The interesting problem was not generating a board-shaped object. Generators are very good at producing objects shaped like answers. The harder problem was building a loop where the agent receives precise failures, the human can inspect the result, and neither is invited to confuse a successful export with a successful design.
+              A circuit board can look plausible and still fail electrical or fabrication checks. Fulmetry gives the agent precise failures, gives the human an inspectable result, and keeps a successful export separate from a successful design.
             </p>
             <p>
-              Fulmetry therefore treats reproducibility, provenance, bounded tools, and honest status language as product features. It is less dazzling than a demo which announces that the board is perfect. It is also considerably cheaper than discovering otherwise after fabrication.
+              Fulmetry records reproducibility, provenance, tool boundaries, and separate readiness states. These records make the design easier to review before fabrication, when mistakes are still inexpensive files.
             </p>
           </div>
         </div>
@@ -147,18 +147,18 @@ import WorkIllustration from "../../components/WorkIllustration.astro";
       <div class="shell project-truth-grid">
         <div>
           <p class="section-index">05 / Current truth</p>
-          <h2>Experimental means experimental.</h2>
+          <h2>Current support is narrow.</h2>
         </div>
         <div class="project-truth-copy">
           <p>
-            The initial release targets Apple Silicon macOS and Bun 1.3.14 exactly. It is built on the tscircuit version pinned by Fulmetry and is an independent project, not an official tscircuit product. Support is intentionally conservative while the verification boundaries are proved.
+            The initial release targets Apple Silicon macOS and Bun 1.3.14 exactly. It is built on the tscircuit version pinned by Fulmetry and is an independent project, not an official tscircuit product. Support remains narrow while the verification boundaries are tested.
           </p>
           <p>
-            Fulmetry does not certify a board, replace qualified engineering review, or make arbitrary generated hardware safe. High-voltage, RF, medical, automotive, aerospace, and other regulated work remain excellent places to involve an experienced electrical engineer rather than a particularly enthusiastic terminal.
+            Fulmetry does not certify a board, replace qualified engineering review, or make arbitrary generated hardware safe. High voltage, RF, medical, automotive, aerospace, and other regulated work require an experienced electrical engineer.
           </p>
           <ul>
             <li>Open source under the MIT licence</li>
-            <li>Local and telemetry-free by default</li>
+            <li>Local with telemetry disabled by default</li>
             <li>Built on the supported tscircuit implementation</li>
             <li>KiCad available as a detached handoff</li>
           </ul>
@@ -169,7 +169,7 @@ import WorkIllustration from "../../components/WorkIllustration.astro";
     <section class="project-cta-section">
       <div class="shell project-cta-grid">
         <p class="section-index">Explore the project</p>
-        <h2>Build a board. Keep the receipts.</h2>
+        <h2>Build a board with reviewable evidence.</h2>
         <div class="project-cta-actions">
           <a class="oval-link oval-link-large" href="https://fulmetry.com/" target="_blank" rel="noopener noreferrer">Open Fulmetry ↗</a>
           <a class="arrow-link" href="https://docs.page/Fulmetry/fulmetry" target="_blank" rel="noopener noreferrer">Read the documentation <span>↗</span></a>

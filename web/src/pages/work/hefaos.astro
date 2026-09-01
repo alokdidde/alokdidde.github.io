@@ -5,7 +5,7 @@ import WorkIllustration from "../../components/WorkIllustration.astro";
 
 <BaseLayout
   title="HefaOS: an open stack for building real robots"
-  description="Why I am building HefaOS, an open-source robotics framework pairing a declarative TypeScript SDK with a real-time C++ runtime, hardware abstraction, simulation, and explicit execution constraints."
+  description="HefaOS is an open source robotics framework that pairs TypeScript robot definitions with a C++ runtime, hardware abstraction, simulation, and explicit execution constraints."
 >
   <main class="project-page hefaos-page">
     <section class="project-hero">
@@ -14,9 +14,9 @@ import WorkIllustration from "../../components/WorkIllustration.astro";
         <div class="project-hero-grid">
           <div class="project-hero-copy">
             <p class="eyebrow">Selected work / HefaOS</p>
-            <h1>Build the robot. Not its infrastructure. Again.</h1>
+            <h1>A typed path from robot definition to runtime.</h1>
             <p class="project-lede">
-              HefaOS is an open-source attempt to make the foundations of a robot reusable: describe hardware, tasks, and behaviour in TypeScript, then run them through a C++ system designed for the less negotiable parts of the physical world.
+              HefaOS is an early open source framework. Its design pairs TypeScript definitions of hardware, tasks, and behaviours with a C++ runtime intended to enforce timing and hardware constraints.
             </p>
             <div class="project-actions">
               <a class="oval-link" href="https://github.com/alokdidde/HefaOS" target="_blank" rel="noopener noreferrer">Browse HefaOS ↗</a>
@@ -28,13 +28,13 @@ import WorkIllustration from "../../components/WorkIllustration.astro";
             <WorkIllustration id="hefaos-page" visual="robotics" />
             <div class="project-visual-caption">
               <span>DEFINE / COMPILE / RUN</span>
-              <strong>Readable above.<br />Predictable below.</strong>
+              <strong>TypeScript definitions.<br />C++ execution.</strong>
             </div>
           </div>
         </div>
 
         <dl class="project-facts">
-          <div><dt>Type</dt><dd>Open-source framework</dd></div>
+          <div><dt>Type</dt><dd>Open source framework</dd></div>
           <div><dt>Authoring</dt><dd>TypeScript + TSX</dd></div>
           <div><dt>Runtime</dt><dd>Modern C++</dd></div>
           <div><dt>Status</dt><dd>Early architecture</dd></div>
@@ -46,13 +46,13 @@ import WorkIllustration from "../../components/WorkIllustration.astro";
       <div class="shell project-statement-grid">
         <p class="section-index">01 / Why it exists</p>
         <div>
-          <h2>Robotics has a habit of making every new machine begin with plumbing.</h2>
+          <h2>Robot projects rebuild the same foundation.</h2>
           <div class="project-copy-columns">
             <p>
-              A robot project quickly accumulates drivers, state, scheduling, message transport, configuration, deployment, simulation, model runtimes, and safety boundaries. Much of it is necessary. Rather less of it is the reason anybody wanted to build the robot.
+              A robot project needs drivers, state management, scheduling, message transport, deployment, simulation, model runtimes, and safety boundaries. Teams often assemble these pieces again for each machine.
             </p>
             <p>
-              Existing frameworks solve a great deal, but the path from a readable robot definition to deterministic execution still asks teams to hold several mental models at once. HefaOS asks whether that boundary can become narrower, more explicit, and pleasantly boring.
+              Existing frameworks provide many of those pieces. HefaOS explores a narrower path from a typed robot definition to explicit task graphs, target configuration, and deterministic execution.
             </p>
           </div>
         </div>
@@ -63,7 +63,7 @@ import WorkIllustration from "../../components/WorkIllustration.astro";
       <div class="shell">
         <header class="project-section-heading">
           <p class="section-index">02 / The model</p>
-          <h2>Friendly at design time. Strict at run time.</h2>
+          <h2>TypeScript definitions with C++ execution.</h2>
           <p>
             The architecture separates how a robot is described from how it executes. TypeScript provides the vocabulary. The compiler checks and lowers it. C++ deals with timing, hardware, and the consequences.
           </p>
@@ -83,12 +83,12 @@ import WorkIllustration from "../../components/WorkIllustration.astro";
           <article>
             <span>03</span>
             <h3>The runtime owns execution</h3>
-            <p>A C++ core is designed around explicit task graphs, bounded state, hardware access, and deterministic scheduling rather than a cheerful collection of background promises.</p>
+            <p>A C++ core is designed to run explicit task graphs with bounded state, direct hardware access, and deterministic scheduling.</p>
           </article>
           <article>
             <span>04</span>
             <h3>Hardware and simulation share a boundary</h3>
-            <p>A common abstraction layer is intended to let the same robot definition meet Linux hardware, test doubles, or simulation without pretending those environments are identical.</p>
+            <p>A common abstraction layer is intended to connect the same robot definition to Linux hardware, test doubles, or simulation while keeping backend differences visible.</p>
           </article>
         </div>
       </div>
@@ -98,18 +98,18 @@ import WorkIllustration from "../../components/WorkIllustration.astro";
       <div class="shell project-workflow-grid">
         <div class="project-workflow-intro">
           <p class="section-index">03 / The intended loop</p>
-          <h2>Describe once. Challenge often.</h2>
-          <p>The specification is trying to make the path from an idea to a tested physical system easier to inspect.</p>
+          <h2>From robot definition to target runtime.</h2>
+          <p>The intended workflow keeps definition, validation, and execution in one repository.</p>
         </div>
 
         <ol class="project-workflow-list">
           <li>
             <span>01</span>
-            <div><h3>Define the machine</h3><p>Describe joints, sensors, actuators, limits, frames, and target hardware as named components rather than scattering them across configuration files and constructor folklore.</p></div>
+            <div><h3>Define the machine</h3><p>Keep joints, sensors, actuators, limits, frames, and target hardware together as named, typed components.</p></div>
           </li>
           <li>
             <span>02</span>
-            <div><h3>State the work and its timing</h3><p>Tasks declare periods, deadlines, priority, inputs, and outputs. The execution contract becomes part of the source rather than a fact discovered during an especially educational oscillation.</p></div>
+            <div><h3>State the work and its timing</h3><p>Tasks declare periods, deadlines, priority, inputs, and outputs. Timing requirements stay in source and can be checked before deployment.</p></div>
           </li>
           <li>
             <span>03</span>
@@ -117,7 +117,7 @@ import WorkIllustration from "../../components/WorkIllustration.astro";
           </li>
           <li>
             <span>04</span>
-            <div><h3>Move from simulation to hardware</h3><p>Exercise the same system against simulated and physical backends, keeping the differences visible instead of hiding them beneath a particularly optimistic adapter.</p></div>
+            <div><h3>Move from simulation to hardware</h3><p>Run the same system against simulated and physical backends while preserving the configuration and capability differences between them.</p></div>
           </li>
         </ol>
       </div>
@@ -127,16 +127,16 @@ import WorkIllustration from "../../components/WorkIllustration.astro";
       <div class="shell project-origin-grid">
         <p class="section-index">04 / Why I am building it</p>
         <div>
-          <h2>The abstraction should help without lying.</h2>
+          <h2>A readable API must preserve runtime constraints.</h2>
           <p class="project-origin-lede">
-            I wanted a robotics stack that is approachable from software, but remains honest about time, hardware, and failure.
+            I wanted a robotics stack that software engineers can read without hiding timing, hardware, or failure modes.
           </p>
           <div class="project-copy-columns">
             <p>
-              High-level tools are useful because they let more people express a system clearly. They become dangerous when ease of expression is mistaken for ease of execution. A one-millisecond task is not made punctual by placing it inside a nicer API.
+              A readable API makes a robot easier to describe, but it cannot relax the system’s timing requirements. A task with a one millisecond deadline remains a one millisecond task after compilation.
             </p>
             <p>
-              HefaOS therefore keeps the authoring model and runtime model distinct but connected. The ambition is not to disguise the machinery. It is to give each concern a sensible home, then make the boundaries inspectable enough that somebody else can build on them.
+              HefaOS keeps the authoring model and runtime model separate, with the compiler connecting them. This gives hardware, scheduling, behaviours, and generated artefacts defined places in the system.
             </p>
           </div>
         </div>
@@ -151,10 +151,10 @@ import WorkIllustration from "../../components/WorkIllustration.astro";
         </div>
         <div class="project-truth-copy">
           <p>
-            HefaOS is public at an early stage. The operating-system, SDK, and development-infrastructure specifications are substantial, and the repository contains the intended package structure, build system, CI, development environment, and a declarative robotic-arm example.
+            HefaOS is public at an early stage. The OS, SDK, and development infrastructure specifications describe the design in detail. The repository contains the package structure, build system, CI, development environment, and a declarative robot arm example.
           </p>
           <p>
-            Large parts of the runtime, hardware layer, AI backends, compiler, and tests are still scaffolding. There are no production timing results to publish yet. The repository is an architectural commitment and a place to do the work, not evidence that the work has politely completed itself.
+            Large parts of the runtime, hardware layer, AI backends, compiler, and tests are still scaffolding. No production timing results are available yet. The repository documents the intended architecture and provides a starting structure for the implementation.
           </p>
           <ul>
             <li>Public and open source under the MIT licence</li>
@@ -169,7 +169,7 @@ import WorkIllustration from "../../components/WorkIllustration.astro";
     <section class="project-cta-section">
       <div class="shell project-cta-grid">
         <p class="section-index">Explore the project</p>
-        <h2>A foundation for robots, still being poured.</h2>
+        <h2>Read the architecture and inspect the implementation.</h2>
         <div class="project-cta-actions">
           <a class="oval-link oval-link-large" href="https://github.com/alokdidde/HefaOS" target="_blank" rel="noopener noreferrer">Browse HefaOS ↗</a>
           <a class="arrow-link" href="https://github.com/alokdidde/HefaOS/blob/master/hefaos-sdk-specification.md" target="_blank" rel="noopener noreferrer">Read the SDK specification <span>↗</span></a>
