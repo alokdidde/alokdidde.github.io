@@ -99,7 +99,15 @@ const formatDate = (value: string) =>
                 {work.tags.map((tag) => <li>{tag}</li>)}
               </ul>
               {work.href && (
-                <a class="work-case-link" href={work.href}>Read the project story <span aria-hidden="true">↗</span></a>
+                <a
+                  class="work-case-link"
+                  href={work.href}
+                  target={work.href.startsWith("http") ? "_blank" : undefined}
+                  rel={work.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                >
+                  {work.href.startsWith("http") ? "View the repository" : "Read the project story"}
+                  <span aria-hidden="true">↗</span>
+                </a>
               )}
             </div>
           </article>
@@ -186,7 +194,7 @@ const formatDate = (value: string) =>
     <div class="shell signal-grid" data-reveal>
       <div>
         <p class="section-index">A short signal</p>
-        <h2>Fourteen years building software. Now applying that scar tissue to robots.</h2>
+        <h2>Software, robots, and the untidy space where the two must actually work.</h2>
       </div>
       <dl>
         <div><dt>Focus</dt><dd>Open robotics + physical AI</dd></div>

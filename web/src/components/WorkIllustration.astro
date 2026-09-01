@@ -1,5 +1,5 @@
 ---
-type Visual = "overview" | "robotics" | "agriculture" | "retrieval" | "pcboo" | "healthcare";
+type Visual = "overview" | "robotics" | "agriculture" | "retrieval" | "fulmetry" | "healthcare";
 
 interface Props {
   id: string;
@@ -15,7 +15,7 @@ const { id, visual } = Astro.props;
     {visual === "robotics" && "Animated diagram of a modular robot system"}
     {visual === "agriculture" && "Animated diagram of an autonomous agricultural robot"}
     {visual === "retrieval" && "Animated diagram of exploratory information retrieval"}
-    {visual === "pcboo" && "Animated technical diagram of a circuit board designed as code"}
+    {visual === "fulmetry" && "Animated technical diagram of a circuit board built with a coding agent"}
     {visual === "healthcare" && "Animated diagram of connected healthcare systems"}
   </title>
   <defs>
@@ -126,39 +126,24 @@ const { id, visual } = Astro.props;
     </g>
   )}
 
-  {visual === "pcboo" && (
-    <g class="visual-symbol visual-pcboo">
-      <rect class="visual-board" x="78" y="72" width="484" height="376" rx="26" />
-      <g class="visual-board-mounts">
-        <g transform="translate(110 106)"><circle r="11" /><circle r="4" /></g>
-        <g transform="translate(530 106)"><circle r="11" /><circle r="4" /></g>
-        <g transform="translate(110 414)"><circle r="11" /><circle r="4" /></g>
-        <g transform="translate(530 414)"><circle r="11" /><circle r="4" /></g>
+  {visual === "fulmetry" && (
+    <g class="visual-symbol visual-fulmetry">
+      <g class="visual-fulmetry-source">
+        <rect class="visual-fill" x="82" y="147" width="190" height="226" rx="38" />
+        <path d="m171 207-43 53 43 53M194 207l43 53-43 53" />
       </g>
-      <g class="visual-board-traces">
-        <path d="M181 171h60v41h49M181 194h34v118h75M391 192h45v-58h52M391 239h91v83M332 301v77h106" />
-        <path class="visual-dash" d="M181 218h78v22h31M391 271h55v70h43" />
-      </g>
-      <g class="visual-board-vias">
-        <circle cx="241" cy="212" r="5" /><circle cx="215" cy="312" r="5" />
-        <circle cx="436" cy="192" r="5" /><circle cx="482" cy="239" r="5" />
-        <circle cx="332" cy="378" r="5" /><circle cx="229" cy="267" r="5" />
-      </g>
-      <g class="visual-board-chip visual-board-chip-main">
-        <rect class="visual-fill" x="290" y="161" width="101" height="140" rx="8" />
-        <path d="M307 184h67M307 205h48M307 257h67M307 278h38" />
-        <circle cx="341" cy="231" r="9" />
-      </g>
-      <g class="visual-board-chip">
-        <rect class="visual-fill" x="125" y="145" width="56" height="95" rx="7" />
-        <path d="M139 168h28M139 190h20M139 212h28" />
-        <rect class="visual-fill" x="438" y="112" width="72" height="58" rx="7" />
-        <path d="M452 133h43M452 150h27" />
-        <rect class="visual-fill" x="438" y="322" width="72" height="58" rx="7" />
-        <path d="M452 343h43M452 360h27" />
-      </g>
-      <g class="visual-board-pins">
-        <path d="M280 179h10M280 199h10M280 219h10M280 239h10M280 259h10M280 279h10M391 179h10M391 199h10M391 219h10M391 239h10M391 259h10M391 279h10" />
+
+      <path class="visual-fulmetry-bridge" d="M272 260h96" />
+      <circle class="visual-signal" cx="320" cy="260" r="8" />
+
+      <g class="visual-fulmetry-output">
+        <rect class="visual-fill" x="368" y="124" width="194" height="272" rx="42" />
+        <circle cx="414" cy="172" r="11" />
+        <circle cx="516" cy="172" r="11" />
+        <circle cx="414" cy="348" r="11" />
+        <circle cx="516" cy="348" r="11" />
+        <circle cx="465" cy="260" r="34" />
+        <circle class="visual-fulmetry-output-core" cx="465" cy="260" r="10" />
       </g>
     </g>
   )}

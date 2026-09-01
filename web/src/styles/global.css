@@ -245,7 +245,7 @@ textarea {
   display: grid;
   align-items: center;
   gap: clamp(2.5rem, 5vw, 6rem);
-  padding-block: clamp(4rem, 8vw, 7.5rem) 7rem;
+  padding-block: clamp(2rem, 3.5vw, 4.25rem) 7rem;
   grid-template-columns: minmax(0, 1.08fr) minmax(24rem, 0.92fr);
 }
 
@@ -413,7 +413,7 @@ textarea {
 }
 
 .hero-robot-field {
-  opacity: 0.9;
+  opacity: 0.82;
   animation: hero-robot-breathe 16s ease-in-out infinite;
   transform-box: fill-box;
   transform-origin: center;
@@ -421,22 +421,27 @@ textarea {
 
 .hero-robot-halo {
   fill: none;
-  opacity: 0.38;
+  opacity: 0.25;
   stroke: var(--teal-dark);
-  stroke-width: 1.35;
+  stroke-dasharray: 8 13;
+  stroke-width: 1.1;
+  animation: orbit-spin 46s linear infinite;
+  transform-origin: 283px 341px;
+}
+
+.hero-robot-guide {
+  fill: none;
+  opacity: 0.24;
+  stroke: var(--teal-dark);
+  stroke-width: 1;
 }
 
 .hero-robot-base {
-  fill: var(--paper-light);
+  fill: rgba(251, 248, 240, 0.88);
   stroke: var(--teal-dark);
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-width: 2.5;
-}
-
-.hero-robot-base ellipse {
-  fill: rgba(11, 68, 76, 0.14);
-  stroke: none;
+  stroke-width: 2.1;
 }
 
 .hero-robot-base circle {
@@ -447,29 +452,21 @@ textarea {
 .hero-robot-arm {
   animation: hero-robot-rise 9s ease-in-out infinite;
   transform-box: view-box;
-  transform-origin: 152px 511px;
+  transform-origin: 175px 513px;
 }
 
 .hero-robot-link {
-  fill: none;
+  fill: rgba(251, 248, 240, 0.88);
   stroke: var(--teal-dark);
   stroke-linecap: round;
-  stroke-width: 52;
+  stroke-linejoin: round;
+  stroke-width: 2.1;
 }
 
-.hero-robot-link-accent {
+.hero-robot-link path {
   fill: none;
-  stroke: url("#hero-robot-arm");
-  stroke-linecap: round;
-  stroke-width: 43;
-}
-
-.hero-robot-link-accent-lower {
-  stroke-dasharray: 116 72;
-}
-
-.hero-robot-link-accent-upper {
-  stroke-dasharray: 86 60;
+  opacity: 0.34;
+  stroke-width: 1.2;
 }
 
 .hero-robot-joint {
@@ -477,13 +474,13 @@ textarea {
 }
 
 .hero-robot-joint-shell {
-  fill: var(--paper-light);
-  stroke-width: 2.5;
+  fill: rgba(251, 248, 240, 0.94);
+  stroke-width: 2.1;
 }
 
 .hero-robot-joint-ring {
-  fill: #b8ddd5;
-  stroke-width: 2;
+  fill: rgba(159, 217, 211, 0.5);
+  stroke-width: 1.8;
   animation: hero-robot-joint 6s ease-in-out infinite;
   transform-box: fill-box;
   transform-origin: center;
@@ -510,16 +507,16 @@ textarea {
 }
 
 .hero-robot-gripper-neck {
-  stroke-width: 22;
+  stroke-width: 9;
 }
 
 .hero-robot-gripper-joint {
   fill: var(--paper-light);
-  stroke-width: 2.5;
+  stroke-width: 2;
 }
 
 .hero-robot-gripper-claw {
-  stroke-width: 7;
+  stroke-width: 4;
 }
 
 .hero-robot-object {
@@ -528,30 +525,37 @@ textarea {
   transform-origin: 426px 170px;
 }
 
-.hero-robot-object-glow {
-  fill: #efc15c;
-  opacity: 0.52;
-  filter: url("#hero-robot-glow");
-}
-
 .hero-robot-object-ring {
-  fill: none;
-  opacity: 0.65;
-  stroke: var(--paper-light);
-  stroke-width: 2;
+  fill: rgba(251, 248, 240, 0.72);
+  stroke: var(--teal-dark);
+  stroke-width: 1.8;
 }
 
 .hero-robot-object-core {
-  stroke: var(--teal-dark);
-  stroke-width: 2;
+  fill: var(--amber);
+  stroke: none;
 }
 
-.hero-robot-sparks {
+.hero-robot-signal {
+  fill: none;
+  opacity: 0.56;
+  stroke: var(--teal-dark);
+  stroke-dasharray: 5 9;
+  stroke-width: 1.5;
+  animation: case-dash 13s linear infinite;
+}
+
+.hero-robot-marks {
   fill: none;
   stroke: var(--amber);
   stroke-linecap: round;
-  stroke-width: 3;
+  stroke-width: 2.4;
   animation: hero-robot-spark 5.5s ease-in-out infinite;
+}
+
+.hero-robot-marks circle {
+  fill: var(--amber);
+  stroke: none;
 }
 
 .work-illustration {
@@ -581,10 +585,10 @@ textarea {
   color: var(--blue);
 }
 
-.work-illustration[data-visual="pcboo"] {
-  --visual-a: #b8dccb;
-  --visual-b: #e6bd68;
-  color: #164f42;
+.work-illustration[data-visual="fulmetry"] {
+  --visual-a: #b9dfd6;
+  --visual-b: #e3bd72;
+  color: var(--teal-dark);
 }
 
 .work-illustration[data-visual="healthcare"] {
@@ -675,42 +679,31 @@ textarea {
   animation-delay: -2s;
 }
 
-.visual-board {
-  fill: rgba(251, 248, 240, 0.3);
-  stroke-width: 1.8;
+.visual-fulmetry-source {
+  animation: visual-float-reverse 10s ease-in-out infinite;
+  transform-origin: center;
 }
 
-.visual-board-mounts,
-.visual-board-vias,
-.visual-board-traces,
-.visual-board-pins {
-  fill: none;
-  stroke: currentColor;
+.visual-fulmetry-output {
+  animation: visual-float 11s ease-in-out infinite;
+  transform-origin: center;
 }
 
-.visual-board-mounts circle:first-child {
-  fill: rgba(251, 248, 240, 0.62);
-}
-
-.visual-board-vias circle {
-  fill: var(--amber);
-  stroke: rgba(251, 248, 240, 0.85);
-  stroke-width: 2;
-}
-
-.visual-board-traces {
-  opacity: 0.82;
+.visual-fulmetry-source,
+.visual-fulmetry-output {
   stroke-width: 2.25;
 }
 
-.visual-board-chip {
-  animation: visual-board-chip 7s ease-in-out infinite;
+.visual-fulmetry-bridge {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
 }
 
-.visual-board-chip-main {
-  animation-delay: -3.5s;
+.visual-fulmetry-output-core {
+  fill: var(--amber);
+  stroke: none;
 }
-
 
 .visual-core {
   animation: visual-core 18s ease-in-out infinite;
@@ -2339,11 +2332,6 @@ textarea {
 @keyframes hero-robot-spark {
   0%, 30%, 100% { opacity: 0.28; }
   50%, 70% { opacity: 1; }
-}
-
-@keyframes visual-board-chip {
-  0%, 100% { opacity: 0.76; }
-  50% { opacity: 1; }
 }
 
 .back-link {

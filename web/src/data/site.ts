@@ -17,21 +17,36 @@ export const site = {
 export const selectedWork = [
   {
     number: "01",
-    title: "An open stack for building real robots",
-    shortTitle: "Open robotics stack",
+    title: "HefaOS: an open stack for building real robots",
+    shortTitle: "HefaOS",
     category: "Robotics infrastructure",
     status: "Building now",
     summary:
       "A framework for moving from an idea to working hardware without rebuilding the same infrastructure every time.",
     detail:
       "The aim is practical: composable software, firmware, and hardware interfaces that are understandable enough to change—and solid enough to build on.",
-    tags: ["ROS 2", "C++", "Python", "Open source"],
+    tags: ["C++", "TypeScript", "Real-time", "Open source"],
     visual: "robotics",
     shape: "arch",
-    href: null,
+    href: "/work/hefaos",
   },
   {
     number: "02",
+    title: "Describe the board. Let the coding agent build it",
+    shortTitle: "Fulmetry",
+    category: "Agentic electronics",
+    status: "Open source",
+    summary:
+      "Fulmetry gives your coding agent the project structure and commands to write the TypeScript, place and route the PCB, then build and test it.",
+    detail:
+      "You review the schematic, PCB, and 3D assembly in a local workspace, steer the next change, and prepare the finished board for manufacturing.",
+    tags: ["TypeScript", "Bun", "tscircuit", "Hardware"],
+    visual: "fulmetry",
+    shape: "soft-square",
+    href: "/work/fulmetry",
+  },
+  {
+    number: "03",
     title: "A field robot that sees, navigates, and acts",
     shortTitle: "Agricultural robot",
     category: "MSc Robotics project",
@@ -46,7 +61,7 @@ export const selectedWork = [
     href: null,
   },
   {
-    number: "03",
+    number: "04",
     title: "Retrieval that explores instead of only ranking",
     shortTitle: "DexRAG",
     category: "Retrieval research",
@@ -61,26 +76,11 @@ export const selectedWork = [
     href: null,
   },
   {
-    number: "04",
-    title: "Circuit boards as code, with evidence",
-    shortTitle: "PCBoo",
-    category: "Agent-native EDA",
-    status: "Open source",
-    summary:
-      "PCBoo lets coding agents author circuit boards as composable TypeScript, then makes them show their working.",
-    detail:
-      "Deterministic builds, structured diagnostics, local inspection, and separate readiness statuses keep a plausible-looking board from quietly becoming a very expensive coaster.",
-    tags: ["TypeScript", "Bun", "tscircuit", "Hardware"],
-    visual: "pcboo",
-    shape: "soft-square",
-    href: "/work/pcboo",
-  },
-  {
     number: "05",
     title: "Healthcare systems designed for the messy real world",
     shortTitle: "Healthcare platforms",
     category: "Software systems",
-    status: "14 years in practice",
+    status: "Production systems",
     summary:
       "Clinical platforms, remote patient monitoring, real-time communication, claims workflows, and AI-assisted document systems.",
     detail:
