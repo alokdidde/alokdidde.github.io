@@ -2663,11 +2663,59 @@ html.js [data-reveal].is-visible {
 
   .post-card {
     align-items: start;
+    gap: 0.8rem 1rem;
+    padding-block: 1.6rem;
     grid-template-columns: 1fr auto;
   }
 
   .post-card .post-date {
     grid-column: 1 / -1;
+  }
+
+  .post-card > div {
+    min-width: 0;
+  }
+
+  .post-card h2 {
+    font-size: clamp(1.75rem, 7.5vw, 2.5rem);
+    line-height: 1.02;
+    overflow-wrap: break-word;
+    text-wrap: balance;
+  }
+
+  .post-card p {
+    margin-top: 0.7rem;
+    line-height: 1.65;
+  }
+
+  .writing-index {
+    padding-block: 7.25rem 4.5rem;
+  }
+
+  .writing-index .page-header {
+    padding-bottom: 2.75rem;
+  }
+
+  .writing-index .page-header::after {
+    top: -2rem;
+    right: -7rem;
+    width: 20rem;
+    height: 15rem;
+  }
+
+  .writing-index .page-header h1 {
+    font-size: clamp(3.75rem, 18vw, 6rem);
+    line-height: 0.88;
+  }
+
+  .writing-index .page-intro {
+    margin-top: 1.35rem;
+    font-size: 0.9rem;
+    line-height: 1.65;
+  }
+
+  .writing-index .post-list {
+    margin-top: 0.25rem;
   }
 
   .case-study-marker {
@@ -2794,6 +2842,30 @@ html.js [data-reveal].is-visible {
 
   .home-post {
     gap: 0.8rem;
+  }
+
+  .writing-index {
+    padding-top: 6.6rem;
+  }
+
+  .writing-index .page-header {
+    padding-bottom: 2.25rem;
+  }
+
+  .writing-index .page-header h1 {
+    font-size: clamp(3.5rem, 19vw, 5rem);
+  }
+
+  .writing-index .post-card {
+    column-gap: 0.75rem;
+  }
+
+  .writing-index .post-card h2 {
+    font-size: clamp(1.65rem, 8.6vw, 2.1rem);
+  }
+
+  .writing-index .post-arrow {
+    font-size: 0.95rem;
   }
 
   .question-card {
