@@ -1,0 +1,263 @@
+---
+title: "Robots need loops that know when to stop"
+summary: "A loop-engineered robotics harness should route experiments through durable state, independent verification, simulation, replay and supervised hardware."
+publishedAt: 2026-08-26
+tags:
+  - robotics
+  - loop-engineering
+  - agents
+  - safety
+  - experimentation
+draft: false
+---
+
+import SourceCard from "../../components/article/SourceCard.astro"
+import SystemStage from "../../components/article/SystemStage.astro"
+
+An AI agent can alter a controller, launch a simulator, read the result and try again. This sounds like a robotics laboratory that never sleeps. Without an outer control loop, it can also become a very efficient machine for producing 600 variations of the same mistake.
+
+Loop engineering is the design of a system that runs agents repeatedly towards a measurable goal. A normal agent harness governs one run: the tools available, the context supplied and the permissions granted. The loop sits above it. It decides when another run begins, what evidence enters the next prompt, which work is ready, how a result is checked, what survives, when a human must intervene and when the whole exercise should stop.
+
+Andrej Karpathy's `autoresearch` is a wonderfully compact example. An agent edits one training file, runs a fixed five-minute experiment, reads a numerical score, records the result and either keeps the change or resets it. The evaluator stays fixed. The experiment history persists. The human writes the research instructions. The agent works inside that small world until the budget ends.
+
+Robotics needs the same clarity, but it cannot use one validation number as its entire constitution. A robot controller can improve task success while increasing collision force, latency or motor temperature. A failed language model experiment leaves an unflattering line in a log. A failed controller may put a manipulator through a table. The table, unlike a validation set, is not restored by `git reset`.
+
+The design here is a loop-engineered robotics harness for improving planners, controllers, perception pipelines and reward functions. It combines a strict experiment contract, a dependency graph, an independent verifier, durable evidence and a promotion path from simulation to supervised hardware.
+
+<SystemStage
+  stage="specification"
+  number="01"
+  title="Write the loop contract before the first run"
+  input="The task goal, editable scope, fixed evaluator, budgets, safety limits and named escalation points."
+  output="A versioned contract with stop states that can be checked automatically and explicit human gates."
+/>
+
+## The loop sits above the harness
+
+The loop-engineering paper makes a useful distinction. A harness is the execution environment for one agent session. It supplies tools, permissions, memory and feedback. Loop engineering is concerned with recurrence. It coordinates sessions over time using triggers, durable state, goals that can be checked automatically, independent verification, budgets and escalation.
+
+This sounds administrative because it is. Administration becomes quite attractive when an actuator is involved.
+
+For a robotics project, the loop contract should specify five things before any agent runs:
+
+1. The objective, expressed as a set of measurable outcomes.
+2. The files and parameters the worker may change.
+3. The evaluator, safety supervisor and tests the worker may not change.
+4. The compute, time, token and hardware budgets.
+5. The conditions for acceptance, rejection, pause and human review.
+
+Suppose the task is to improve grasping of unfamiliar objects. The worker may edit the grasp sampler, scoring model and a small configuration file. It may not edit the collision checker, scenario definitions, force limits or result parser. The goal is not merely “more successful grasps”. It is a vector: success rate, collision rate, peak force, planning time, recovery behaviour and performance across held-out objects.
+
+Some entries in that vector are hard gates. Any collision above the allowed force rejects the candidate even if its average success rate is excellent. A single score is convenient, but it invites the agent to trade away the inconvenient parts of reality.
+
+<SourceCard
+  mediaType="document"
+  publisher="arXiv"
+  title="Loop Engineering: A New Discipline for Agentic Software"
+  url="https://arxiv.org/abs/2608.21884"
+  note="Defines loop engineering above one agent run and describes triggers, durable state, verifiers, budgets, escalation and failure modes."
+/>
+
+<SourceCard
+  mediaType="document"
+  publisher="Andrej Karpathy"
+  title="autoresearch: the program that defines the experiment loop"
+  url="https://github.com/karpathy/autoresearch/blob/master/program.md?plain=1"
+  note="A small, concrete loop in which an agent edits one file, runs a fixed experiment, records the metric, keeps or reverts the change and repeats."
+/>
+
+<SourceCard
+  mediaType="video"
+  publisher="No Priors"
+  title="Skill Issue: Andrej Karpathy on Code Agents, AutoResearch, and the Loopy Era of AI"
+  url="https://www.youtube.com/watch?v=kwSVtQ7dziU"
+  note="Karpathy discusses coding agents, autoresearch and the move from supervising individual runs to setting up loops that continue the work."
+/>
+
+The phrase itself should not be lazily attributed to Karpathy. His work is a clear example of the architecture. The recent loop-engineering paper traces the wider framing through several practitioners. The useful idea is not ownership of the label. It is the separation of one agent run from the system that decides whether another run deserves to happen.
+
+<SystemStage
+  stage="routing"
+  number="02"
+  title="Let evidence choose the next experiment"
+  input="Persistent state, an experiment graph, previous failures, open questions and the remaining budget."
+  output="One ready experiment with an isolated workspace, a stated hypothesis and an exact acceptance unit."
+/>
+
+## Give experiments dependencies, not a queue
+
+Robotics experiments are rarely independent. A navigation policy cannot be evaluated on hardware before its sensor calibration passes. A new grasp scorer is not ready for physical testing until it survives held-out simulation scenes and log replay. “Try the next idea” is therefore too vague to be a routing policy.
+
+LoopsBench models agent work across many runs as a dependency graph. Each node is a separately testable unit. A node becomes ready only when its prerequisites pass. Completed nodes remain regression obligations while later work proceeds.
+
+That shape fits robotics well. An experiment graph might contain nodes for:
+
+1. Reproducing the current baseline from a pinned environment.
+2. Adding the proposed controller change.
+3. Passing deterministic simulator scenarios.
+4. Passing randomized scenes, sensor noise and timing variation.
+5. Replaying recorded hardware logs.
+6. Running hardware in the loop without physical motion.
+7. Performing a supervised hardware canary.
+
+The loop controller inspects the ready frontier and chooses one node. It opens an isolated worktree, assembles a prompt from the contract and relevant evidence, sets a budget, then starts the worker harness. It does not dump the entire history into the context and hope the model notices the useful part.
+
+The prompt should state the current hypothesis. For example: “Grasp failures on narrow objects appear after the approach pose filter. Change only the sampler and scoring configuration. Preserve the force and collision gates. Improve held-out success across seeds 41 to 50 without increasing median planning time above 180 milliseconds.”
+
+That is less lyrical than “make the robot better”, but the robot is not applying for an arts grant.
+
+<SourceCard
+  mediaType="document"
+  publisher="arXiv"
+  title="LoopsBench: A Benchmark for Long-Horizon Agent Loops"
+  url="https://arxiv.org/abs/2608.00267"
+  note="Represents work across many sessions as a dependency graph of testable units, exposes a ready frontier and retains completed work as regression obligations."
+/>
+
+## Keep an experiment ledger, not a chat transcript
+
+The durable state should describe what happened in a form another process can inspect. A conversation transcript is useful supporting evidence. It is a poor database.
+
+For every experiment, the ledger should record:
+
+1. The candidate commit and parent commit.
+2. The hypothesis and exact editable scope.
+3. Simulator, robot model, calibration, data and evaluator versions.
+4. Scenario IDs, random seeds and environment parameters.
+5. The complete metric vector and results from every hard gate.
+6. Logs, traces, videos and failure snapshots.
+7. The verifier's verdict and reason.
+8. The human decision where approval was required.
+
+Failures belong in the ledger too. If a controller overshoots after a delayed observation, that scenario becomes a regression test. The next candidate must pass it before reaching the ready frontier for hardware. Progress includes a growing body of failures the system knows how not to repeat, alongside the aggregate score.
+
+The ledger also prevents a common agent habit: rediscovering the same bad idea with fresh confidence. Before proposing an experiment, the loop searches prior hypotheses, changes and failure classes. Similar work can be rejected, amended or deliberately repeated under a changed condition.
+
+<SystemStage
+  stage="verification"
+  number="03"
+  title="Use a checker the worker cannot edit"
+  input="A candidate commit, fixed scenarios, telemetry, videos, replay artefacts and the immutable loop contract."
+  output="An accepted or rejected verdict with safety gates, regression results and evidence for the next run."
+/>
+
+## The worker does not mark its own homework
+
+Karpathy's small research loop works because the evaluator is fixed outside the editable training file. A robotics loop needs the same separation, with more than one kind of evidence.
+
+The worker proposes a change and runs cheap checks while developing. The verifier then evaluates the committed candidate from a clean environment. It owns the scenario suite, result extraction and acceptance policy. The worker cannot alter any of them.
+
+Verification should include four layers:
+
+1. Build and interface checks. Does the candidate compile, start and expose the expected topics, actions or services?
+2. Behavioural checks. Does it complete the task across fixed and randomized scenarios?
+3. Safety checks. Does it remain within collision, force, torque, velocity, joint, workspace and timeout limits?
+4. Regression checks. Does it still pass every previously accepted obligation?
+
+The verdict must point to evidence. “Passed” should link to the evaluator version, scenario set, telemetry and video. “Failed” should identify the gate and preserve enough state for the next loop to investigate.
+
+This maker and checker separation matters because agents can optimise the visible test. The loop-engineering paper calls the empty version of verification “verifier theatre”. The ritual exists, but the checker merely repeats the worker's claim in a more official tone.
+
+MoveIt Servo offers a useful example of runtime boundaries that should sit outside the agent's editable scope. Its safety behaviour includes enforcing joint limits, handling singularities and checking for collisions. ROS 2 managed nodes provide explicit lifecycle states for controlled activation, deactivation and error handling. These are not sufficient safety systems on their own, but they illustrate the kind of boring, external authority the loop should preserve.
+
+<SourceCard
+  mediaType="document"
+  publisher="MoveIt"
+  title="MoveIt Servo realtime control tutorial"
+  url="https://moveit.picknik.ai/main/doc/examples/realtime_servo/realtime_servo_tutorial.html"
+  note="Documents joint limits, singularity handling and collision checking for realtime arm commands."
+/>
+
+<SourceCard
+  mediaType="document"
+  publisher="ROS 2 Design"
+  title="Managed nodes and lifecycle states"
+  url="https://design.ros2.org/articles/node_lifecycle.html"
+  note="Defines explicit configuration, activation, deactivation and error handling states for supervised ROS 2 components."
+/>
+
+## A safety supervisor stays outside the loop
+
+The agent may improve a controller. It does not become the final authority on motion.
+
+A separate runtime supervisor should enforce joint, velocity, force, torque and workspace limits. It watches heartbeats, timestamps and sensor freshness. It can halt commands on collision risk, stale state, missed deadlines or unexpected mode changes. It owns the emergency stop path. The loop may request activation. It cannot weaken the supervisor to make an experiment pass.
+
+This boundary should exist in the process architecture as well as the prompt. Prompt instructions are useful, but permissions impose the boundary. The worker receives read access to safety configuration and no write access. Hardware credentials are absent from ordinary experiment runs. The promotion service grants a narrow capability for a limited time only after the required gates and human approval.
+
+<SystemStage
+  stage="promotion"
+  number="04"
+  title="Promote through simulation, replay and hardware"
+  input="A candidate that passes deterministic scenarios, randomized conditions and every accumulated regression."
+  output="A supervised hardware canary with narrow limits, or a rejection supported by evidence before anything moves."
+/>
+
+## Treat hardware as the final environment, not the first debugger
+
+Simulation is where the loop can be fast and mildly reckless. Hardware is where it should become slow, specific and rather dull.
+
+Isaac Lab provides parallel simulation, sensor models and domain randomization for robot learning workflows. Domain randomization deliberately varies textures, lighting, dynamics and other simulator parameters so a policy cannot depend on one immaculate virtual world. Neither removes the gap between simulation and reality. They make it possible to measure how quickly a candidate falls apart when conditions change.
+
+The promotion path should narrow uncertainty in stages:
+
+1. Deterministic simulation confirms basic function and makes failures reproducible.
+2. Randomized simulation varies geometry, mass, friction, sensing, latency and disturbances.
+3. Log replay feeds recorded hardware observations through the candidate without issuing commands.
+4. Hardware in the loop tests timing, messages and device interfaces while motion remains disabled or constrained.
+5. A supervised canary runs a small number of attempts at reduced speed and force.
+6. Broader testing happens only after the canary evidence is reviewed.
+
+Each stage has its own acceptance unit. A candidate cannot average its way past a collision by performing brilliantly in nine easier scenes. A hardware canary cannot be promoted because the video looked encouraging while the force sensor briefly became philosophical.
+
+<SourceCard
+  mediaType="document"
+  publisher="arXiv"
+  title="Isaac Lab: A GPU-Accelerated Simulation Framework for Robotics"
+  url="https://arxiv.org/abs/2511.04831"
+  note="Describes a robotics framework with parallel simulation, sensor simulation and domain randomization workflows."
+/>
+
+<SourceCard
+  mediaType="document"
+  publisher="arXiv"
+  title="Domain Randomization for Transferring Deep Neural Networks from Simulation to the Real World"
+  url="https://arxiv.org/abs/1703.06907"
+  note="The early domain-randomization work varies simulated conditions so the real world may appear as another variation rather than a new domain."
+/>
+
+## Generate the next prompt from evidence
+
+After verification, the loop controller updates the experiment graph and assembles the next task. This step should be deterministic where possible.
+
+If the candidate passed, the next node may be a promotion stage or a dependent experiment. If it failed, the loop classifies the failure and retrieves related evidence from the ledger. A collision failure might produce a diagnosis task with the exact scenario, trajectory, relevant telemetry and last known good commit. A timeout might route to profiling rather than inviting another change to the reward function.
+
+The next prompt should contain:
+
+1. One testable hypothesis.
+2. One ready unit of work.
+3. The files the agent may change.
+4. The fixed checks and hard constraints.
+5. Relevant prior attempts and failure evidence.
+6. The budget and required output format.
+
+The agent returns a commit, a short explanation and any new evidence. It does not decide whether the work is accepted. That belongs to the verifier and loop controller.
+
+## Know when to stop
+
+An autonomous loop without a stop policy is a subscription service for compute providers.
+
+The system should stop when the target is met, the experiment budget is exhausted, progress has plateaued, the ready frontier is empty, the verifier disagrees with itself, safety evidence is incomplete or a human gate is reached. Repeated failures in the same class should trigger escalation rather than increasingly creative retries.
+
+Budgets should cover more than tokens. Track simulator hours, evaluator runs, stored artefacts, hardware cycles and the human review queue. A system that creates 200 technically reviewable candidates overnight has not saved time if three engineers spend the morning discovering that 197 are variations of a loose cable.
+
+Pause and kill controls must work outside the agent process. So must the audit trail. When somebody stops a loop, the current workspace, command, evidence and reason should remain inspectable.
+
+## The human keeps the hardware key
+
+The harness may be able to edit, build and evaluate a controller. That does not grant it access to a physical robot. Hardware promotion remains a separate capability with fixed safety supervision, narrow permissions and a named human gate.
+
+Karpathy's `autoresearch` makes the pattern visible through a tiny research world. Loop engineering adds the machinery around recurring runs. For robots, that machinery must also govern the boundary between a promising result and a moving machine.
+
+The agent may propose the next move. The verifier decides whether the evidence supports it. The loop decides what runs next. A human decides when the machine is allowed to move in the room.
+
+That is slower than telling an agent to keep trying until the score improves. It is also a great deal faster than explaining the table.

@@ -2092,6 +2092,28 @@ textarea {
   --case-wash-b: #d6a45c;
 }
 
+.system-stage[data-stage="specification"] {
+  --case-wash-a: #b8d7a7;
+  --case-wash-b: #83cdd0;
+  border-radius: 7rem 7rem 0.5rem 0.5rem / 4rem 4rem 0.5rem 0.5rem;
+}
+
+.system-stage[data-stage="routing"] {
+  --case-wash-a: #c6ece7;
+  --case-wash-b: #6bbfc2;
+}
+
+.system-stage[data-stage="verification"] {
+  --case-wash-a: #f0c36d;
+  --case-wash-b: #83cdd0;
+  border-radius: 10rem 0.5rem 10rem 0.5rem / 5rem 0.5rem 5rem 0.5rem;
+}
+
+.system-stage[data-stage="promotion"] {
+  --case-wash-a: #83cdd0;
+  --case-wash-b: #d6a45c;
+}
+
 .case-study-copy {
   position: relative;
   z-index: 2;

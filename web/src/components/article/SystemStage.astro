@@ -1,5 +1,13 @@
 ---
-type Stage = "mapping" | "recognition" | "retrieval" | "navigation";
+type Stage =
+  | "mapping"
+  | "recognition"
+  | "retrieval"
+  | "navigation"
+  | "specification"
+  | "routing"
+  | "verification"
+  | "promotion";
 
 type SystemStage = {
   stage: Stage;
@@ -18,6 +26,10 @@ const stageLabels: Record<Stage, string> = {
   recognition: "Mark",
   retrieval: "Retrieve",
   navigation: "Move",
+  specification: "Bound",
+  routing: "Route",
+  verification: "Verify",
+  promotion: "Promote",
 };
 ---
 
@@ -104,6 +116,59 @@ const stageLabels: Record<Stage, string> = {
         <path class="case-dash stage-route" d="M115 224c8-51 39-65 83-65h67c43 0 53-34 86-34 30 0 36 27 36 55" />
         <path class="case-fill" d="m387 183-23-39h46Z" />
         <circle cx="387" cy="185" r="11" />
+      </g>
+    )}
+
+    {item.stage === "specification" && (
+      <g class="case-symbol stage-symbol stage-specification">
+        <rect x="72" y="48" width="336" height="264" rx="44" />
+        <path class="case-dash" d="M107 91h266v178H107z" />
+        <path class="case-fill" d="M178 239h124l-15-54-37-22h-43l-33 24Z" />
+        <circle cx="207" cy="247" r="13" />
+        <circle cx="273" cy="247" r="13" />
+        <path d="M72 104h31M88 88v32M377 104h31M392 88v32M72 256h31M88 240v32M377 256h31M392 240v32" />
+        <circle class="stage-result" cx="240" cy="116" r="25" />
+        <path d="m228 116 9 9 18-22" />
+      </g>
+    )}
+
+    {item.stage === "routing" && (
+      <g class="case-symbol stage-symbol stage-routing">
+        <path d="M106 100h99M205 100l69 72M205 100l69-72M274 28h101M274 172h101M375 28v144M375 172l-74 112M375 172l74 112" />
+        <circle class="case-fill" cx="81" cy="100" r="29" />
+        <circle class="case-fill" cx="205" cy="100" r="29" />
+        <circle class="case-fill" cx="274" cy="28" r="25" />
+        <circle class="case-fill stage-result" cx="274" cy="172" r="33" />
+        <circle class="case-fill" cx="375" cy="28" r="25" />
+        <circle class="case-fill" cx="375" cy="172" r="29" />
+        <circle class="case-fill" cx="301" cy="284" r="25" />
+        <circle class="case-fill" cx="449" cy="284" r="25" />
+        <path class="case-dash" d="M46 282c79 39 157 38 230 9" />
+      </g>
+    )}
+
+    {item.stage === "verification" && (
+      <g class="case-symbol stage-symbol stage-verification">
+        <rect class="case-fill" x="63" y="92" width="129" height="176" rx="25" />
+        <path d="M88 130h79M88 163h54M88 196h79M88 229h42" />
+        <path class="case-dash" d="M192 180h72" />
+        <circle class="case-fill stage-result" cx="330" cy="180" r="86" />
+        <path d="m287 180 29 29 61-75" />
+        <circle cx="330" cy="180" r="112" />
+        <path d="M330 42V20M330 340v-22M192 180h-22M468 180h-22" />
+      </g>
+    )}
+
+    {item.stage === "promotion" && (
+      <g class="case-symbol stage-symbol stage-promotion">
+        <path d="M58 291h116v-72h126v-75h122V68" />
+        <path class="case-dash stage-route" d="M112 273c9-50 49-25 77-69 28-43 51-3 80-50 27-43 56-4 91-56" />
+        <circle class="case-fill" cx="112" cy="273" r="24" />
+        <circle class="case-fill" cx="237" cy="201" r="24" />
+        <circle class="case-fill" cx="360" cy="126" r="24" />
+        <circle class="stage-result" cx="422" cy="68" r="28" />
+        <path d="m410 68 9 9 18-22" />
+        <path d="M84 291v22M148 219v22M274 144v22M396 68v22" />
       </g>
     )}
   </svg>
