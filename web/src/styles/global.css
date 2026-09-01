@@ -2535,6 +2535,432 @@ html.js [data-reveal].is-visible {
   to { transform: translate3d(-9rem, -6rem, 0) scale(1.12); }
 }
 
+.attention-lab {
+  position: relative;
+  width: min(74rem, calc(100vw - 3rem));
+  margin: 5.5rem 0 5rem 50%;
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+  overflow: hidden;
+  border: 1px solid rgba(22, 48, 46, 0.22);
+  border-radius: 0.5rem 8rem 0.5rem 8rem / 0.5rem 4rem 0.5rem 4rem;
+  background:
+    linear-gradient(135deg, rgba(250, 247, 238, 0.96), rgba(228, 239, 231, 0.8)),
+    var(--paper);
+  box-shadow: 0 2rem 6rem rgba(22, 48, 46, 0.08);
+  color: var(--ink);
+  font-family: var(--sans);
+  transform: translateX(-50%);
+}
+
+.attention-lab-wash {
+  position: absolute;
+  top: -10rem;
+  right: -7rem;
+  width: 32rem;
+  height: 27rem;
+  border-radius: 48% 52% 66% 34% / 55% 37% 63% 45%;
+  background: linear-gradient(135deg, rgba(131, 205, 208, 0.48), rgba(240, 195, 109, 0.42));
+  filter: blur(1px);
+  opacity: 0.72;
+  animation: case-breathe 12s ease-in-out infinite;
+}
+
+.attention-lab-header,
+.attention-lab-tabs,
+.attention-lab-panel {
+  position: relative;
+  z-index: 1;
+}
+
+.attention-lab-header {
+  display: grid;
+  align-items: end;
+  gap: 0.8rem 2rem;
+  grid-template-columns: minmax(0, 1fr) minmax(15rem, 0.55fr);
+}
+
+.attention-lab-kicker,
+.attention-demo-index,
+.attention-mini-label,
+.attention-axis,
+.attention-build-result > span {
+  color: var(--teal-dark);
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.attention-lab-kicker {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+.prose .attention-lab-header h2 {
+  margin: 0;
+  font-size: clamp(3rem, 6vw, 5.8rem);
+  font-weight: 400;
+  line-height: 0.88;
+}
+
+.attention-lab-header > p:last-child {
+  max-width: 31rem;
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+  line-height: 1.65;
+}
+
+.attention-lab-tabs {
+  display: flex;
+  margin: 2.2rem 0 0;
+  border-top: 1px solid rgba(22, 48, 46, 0.2);
+  border-bottom: 1px solid rgba(22, 48, 46, 0.2);
+}
+
+.attention-lab button {
+  appearance: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.attention-lab-tabs button {
+  min-height: 3.6rem;
+  padding: 0.7rem 1.1rem;
+  border: 0;
+  border-right: 1px solid rgba(22, 48, 46, 0.16);
+  background: rgba(250, 247, 238, 0.48);
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  transition: background 180ms ease, color 180ms ease;
+}
+
+.attention-lab-tabs button[aria-selected="true"] {
+  color: var(--paper);
+  background: var(--teal-dark);
+}
+
+.attention-lab-panel {
+  display: grid;
+  min-height: 31rem;
+  padding: clamp(1.5rem, 4vw, 3.25rem) 0 0;
+  gap: clamp(2rem, 5vw, 5rem);
+  grid-template-columns: minmax(14rem, 0.7fr) minmax(0, 1.3fr);
+}
+
+.attention-lab-panel[hidden] {
+  display: none;
+}
+
+.attention-demo-copy {
+  align-self: center;
+}
+
+.attention-demo-index {
+  margin: 0 0 1rem;
+}
+
+.prose .attention-demo-copy h3,
+.prose .attention-builder-intro h3 {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(2.1rem, 4vw, 3.8rem);
+  font-weight: 400;
+  line-height: 0.98;
+}
+
+.attention-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin: 1.7rem 0 1rem;
+}
+
+.attention-chip-row button,
+.attention-choice-row button {
+  padding: 0.58rem 0.86rem;
+  border: 1px solid rgba(22, 48, 46, 0.25);
+  border-radius: 999px;
+  background: rgba(250, 247, 238, 0.68);
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: background 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+.attention-chip-row button:hover,
+.attention-choice-row button:hover {
+  transform: translateY(-1px);
+}
+
+.attention-chip-row button[aria-pressed="true"],
+.attention-choice-row button[aria-pressed="true"] {
+  border-color: var(--teal-dark);
+  color: var(--paper);
+  background: var(--teal-dark);
+}
+
+.attention-live-note {
+  min-height: 4.8rem;
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.78rem;
+  line-height: 1.6;
+}
+
+.attention-mask-demo,
+.attention-head-demo {
+  align-self: center;
+}
+
+.attention-token-row {
+  display: grid;
+  gap: 0.42rem;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.attention-token-row button {
+  min-width: 0;
+  padding: 0.65rem 0.25rem;
+  overflow: hidden;
+  border: 1px solid rgba(22, 48, 46, 0.18);
+  border-radius: 0.5rem;
+  background: rgba(250, 247, 238, 0.7);
+  font-size: 0.68rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.attention-token-row button span {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: var(--ink-faint);
+  font-family: var(--mono);
+  font-size: 0.48rem;
+}
+
+.attention-token-row button[aria-pressed="true"] {
+  border-color: var(--teal-dark);
+  background: rgba(131, 205, 208, 0.32);
+  box-shadow: inset 0 0 0 1px var(--teal-dark);
+}
+
+.attention-matrix-wrap {
+  position: relative;
+  width: min(100%, 31rem);
+  margin: 2.2rem auto 0;
+  padding: 0.9rem 0 0 1.6rem;
+}
+
+.attention-matrix {
+  display: grid;
+  aspect-ratio: 1;
+  gap: 0.32rem;
+  grid-template-columns: repeat(6, 1fr);
+}
+
+.attention-matrix span {
+  border: 1px solid rgba(22, 48, 46, 0.12);
+  border-radius: 32% 68% 36% 64% / 59% 38% 62% 41%;
+  background: rgba(22, 48, 46, 0.055);
+  transition: background 180ms ease, opacity 180ms ease, transform 180ms ease;
+}
+
+.attention-matrix span[data-visible="true"] {
+  background: linear-gradient(135deg, rgba(131, 205, 208, 0.88), rgba(240, 195, 109, 0.72));
+}
+
+.attention-matrix span[data-selected="false"] {
+  opacity: 0.3;
+}
+
+.attention-matrix span[data-selected="true"] {
+  border-color: rgba(22, 48, 46, 0.42);
+  transform: scale(1.05);
+}
+
+.attention-axis {
+  position: absolute;
+  color: var(--ink-faint);
+  font-size: 0.48rem;
+}
+
+.attention-axis-x {
+  top: -0.1rem;
+  left: 55%;
+}
+
+.attention-axis-y {
+  top: 52%;
+  left: -0.5rem;
+  transform: rotate(-90deg);
+}
+
+.attention-head-demo {
+  display: grid;
+  gap: 1rem;
+  padding: 2rem;
+  border: 1px solid rgba(22, 48, 46, 0.18);
+  border-radius: 6rem 6rem 0.5rem 0.5rem / 3rem 3rem 0.5rem 0.5rem;
+  background: rgba(250, 247, 238, 0.46);
+}
+
+.attention-query-heads,
+.attention-kv-heads {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 0.65rem;
+}
+
+.attention-query-heads {
+  grid-template-columns: repeat(8, 1fr);
+}
+
+.attention-kv-heads {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.attention-kv-heads[data-count="8"] { grid-template-columns: repeat(8, 1fr); }
+.attention-kv-heads[data-count="1"] { grid-template-columns: minmax(7rem, 1fr); }
+
+.attention-query-heads span,
+.attention-kv-heads span {
+  display: grid;
+  min-width: 0;
+  aspect-ratio: 1;
+  place-items: center;
+  border: 1px solid var(--teal-dark);
+  border-radius: 50%;
+  background: rgba(198, 236, 231, 0.7);
+  font-family: var(--mono);
+  font-size: 0.55rem;
+}
+
+.attention-kv-heads span {
+  aspect-ratio: auto;
+  min-height: 3.5rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(240, 195, 109, 0.72), rgba(131, 205, 208, 0.62));
+}
+
+.attention-head-lines {
+  width: 100%;
+  height: 4rem;
+  fill: none;
+  stroke: var(--teal-dark);
+  stroke-width: 1.2;
+  stroke-dasharray: 5 6;
+  opacity: 0.42;
+  animation: case-dash 12s linear infinite;
+}
+
+.attention-builder-panel {
+  display: block;
+}
+
+.attention-builder-intro {
+  display: grid;
+  gap: 0.8rem 2rem;
+  grid-template-columns: minmax(0, 1fr) minmax(16rem, 0.72fr);
+}
+
+.attention-builder-intro .attention-demo-index {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+.attention-builder-intro > p:last-child {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.82rem;
+  line-height: 1.65;
+}
+
+.attention-builder {
+  display: grid;
+  margin-top: 2.5rem;
+  border-top: 1px solid rgba(22, 48, 46, 0.18);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.attention-builder fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 1.3rem 1.3rem 1.4rem 0;
+  border: 0;
+  border-bottom: 1px solid rgba(22, 48, 46, 0.16);
+}
+
+.attention-builder fieldset:nth-child(2n) {
+  padding-right: 0;
+  padding-left: 1.3rem;
+  border-left: 1px solid rgba(22, 48, 46, 0.16);
+}
+
+.attention-builder legend {
+  display: grid;
+  width: 100%;
+  padding: 0;
+  gap: 0.15rem;
+}
+
+.attention-builder legend strong {
+  font-family: var(--serif);
+  font-size: 1.25rem;
+  font-weight: 400;
+}
+
+.attention-builder legend span {
+  color: var(--ink-faint);
+  font-size: 0.65rem;
+}
+
+.attention-choice-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.9rem;
+}
+
+.attention-choice-row button {
+  font-size: 0.5rem;
+}
+
+.attention-build-result {
+  display: grid;
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border: 1px solid rgba(22, 48, 46, 0.2);
+  border-radius: 0.5rem 4rem 0.5rem 4rem / 0.5rem 2rem 0.5rem 2rem;
+  background: rgba(198, 236, 231, 0.38);
+  gap: 0.8rem 1.6rem;
+  grid-template-columns: minmax(12rem, 0.75fr) minmax(0, 1.25fr);
+}
+
+.attention-build-result > span {
+  grid-column: 1 / -1;
+}
+
+.prose .attention-build-result p {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(1.7rem, 3vw, 2.5rem);
+  line-height: 1.08;
+}
+
+.attention-build-result ol {
+  margin: 0;
+  padding-left: 1.1rem;
+  color: var(--ink-soft);
+  font-size: 0.68rem;
+  line-height: 1.55;
+}
+
 @media (max-width: 960px) {
   .hero-editorial-grid {
     gap: 2rem;
@@ -2835,6 +3261,72 @@ html.js [data-reveal].is-visible {
     width: min(100%, 29rem);
     margin: 1.25rem auto -0.75rem;
     transform: none;
+  }
+
+  .attention-lab {
+    width: calc(100vw - 2rem);
+    padding: 1.4rem;
+    border-radius: 0.5rem 4rem 0.5rem 4rem / 0.5rem 2rem 0.5rem 2rem;
+  }
+
+  .attention-lab-header,
+  .attention-lab-panel,
+  .attention-builder-intro,
+  .attention-build-result {
+    grid-template-columns: 1fr;
+  }
+
+  .attention-lab-header {
+    align-items: start;
+  }
+
+  .prose .attention-lab-header h2 {
+    font-size: clamp(2.8rem, 14vw, 4.6rem);
+  }
+
+  .attention-lab-tabs {
+    overflow-x: auto;
+  }
+
+  .attention-lab-tabs button {
+    flex: 1 0 auto;
+    white-space: nowrap;
+  }
+
+  .attention-lab-panel {
+    min-height: 0;
+    gap: 1.5rem;
+  }
+
+  .attention-live-note {
+    min-height: 0;
+  }
+
+  .attention-mask-demo {
+    padding: 0.25rem 0 0;
+  }
+
+  .attention-head-demo {
+    padding: 1.2rem;
+    border-radius: 3.5rem 3.5rem 0.5rem 0.5rem / 2rem 2rem 0.5rem 0.5rem;
+  }
+
+  .attention-builder-intro .attention-demo-index {
+    grid-column: auto;
+  }
+
+  .attention-builder {
+    grid-template-columns: 1fr;
+  }
+
+  .attention-builder fieldset,
+  .attention-builder fieldset:nth-child(2n) {
+    padding: 1.1rem 0;
+    border-left: 0;
+  }
+
+  .attention-build-result > span {
+    grid-column: auto;
   }
 
   .source-card {

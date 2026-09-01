@@ -130,6 +130,7 @@ export const post = defineType({
             }),
           ],
         }),
+        defineArrayMember({ type: "attentionLab" }),
         defineArrayMember({ type: "caseStudyMarker" }),
         defineArrayMember({ type: "systemStage" }),
         defineArrayMember({ type: "sourceCard" }),

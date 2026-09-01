@@ -1,0 +1,242 @@
+---
+title: "Attention is seven questions wearing one name"
+summary: "Causal attention, GQA, FlashAttention and RoPE answer different questions. Seven categories show which part each one changes."
+publishedAt: 2026-09-01
+tags:
+  - attention
+  - transformers
+  - llms
+  - machine-learning
+  - explainers
+draft: false
+---
+
+import AttentionLab from "../../components/article/AttentionLab.astro"
+import SourceCard from "../../components/article/SourceCard.astro"
+
+Attention has acquired too many surnames.
+
+There is self-attention, cross-attention, causal attention, grouped-query attention, multi-head latent attention, sliding-window attention, linear attention, FlashAttention, PagedAttention and several dozen more. RoPE and sinusoidal position encoding are often invited to the same list, although they are not attention mechanisms in quite the same sense.
+
+The list feels difficult because it mixes different kinds of decision. Causal attention changes which tokens may communicate. Grouped-query attention changes how query heads share keys and values. FlashAttention changes how the same calculation moves through GPU memory. RoPE supplies position. A model can use all four at once without causing a constitutional crisis.
+
+A better way to read the field is to ask seven questions:
+
+1. How is relevance scored?
+2. Which tokens may look at which other tokens?
+3. How are the heads and key-value cache arranged?
+4. How does the work grow with the input length?
+5. How is the calculation executed and stored?
+6. How does position enter?
+7. What kind of input is being processed?
+
+Every attention name answers one or more of these. The names stop looking like an exotic collection of acronyms and start looking like coordinates on the same map.
+
+## The small idea underneath all the names
+
+Suppose a model is processing the sentence “The robot found the red mug”. For the token “mug”, it needs useful information from the other tokens. “Red” describes it. “Found” tells us what happened to it. “The” is doing honest grammatical work, but it is unlikely to be the star of this particular calculation.
+
+Attention gives every token three learned representations:
+
+1. A query describes what this token is looking for.
+2. A key describes what each candidate token offers.
+3. A value contains the information that can be passed along.
+
+The query for “mug” is compared with the keys. The scores become weights, and the weighted values are combined into a new representation for “mug”. In scaled dot-product attention, the familiar formula is:
+
+`softmax(QKᵀ / √d) V`
+
+The dot products measure alignment between queries and keys. Dividing by the square root of the key dimension keeps the values from becoming awkwardly large. Softmax turns each row into weights. Multiplying by the values retrieves the information.
+
+This engine stays recognisable across the family. Most variants change who enters the comparison, how the comparison is organised, how much state is stored or how efficiently it runs.
+
+<SourceCard
+  mediaType="document"
+  publisher="NeurIPS"
+  title="Attention Is All You Need"
+  url="https://arxiv.org/abs/1706.03762"
+  note="The 2017 Transformer paper defines scaled dot-product attention, multi-head attention, masking and positional encoding in one architecture."
+/>
+
+<AttentionLab
+  title="Build an attention mechanism"
+  intro="Change the mask, share the key-value cache, then assemble choices across all seven parts of the design."
+/>
+
+## 1. Scoring asks what counts as relevant
+
+The first choice is the scoring rule between a query and a key.
+
+Scaled dot-product attention uses a dot product and divides by `√d`. It is common in Transformers because the calculation maps efficiently to matrix multiplication on modern hardware.
+
+Additive attention passes the query and key through a small learned network before producing a score. It appeared in influential sequence-to-sequence work before the Transformer. Cosine attention compares the directions of vectors after accounting for their lengths. Other methods change the kernel or normalisation.
+
+These methods answer the same question: how should one token judge the relevance of another?
+
+Changing the score does not decide whether the model may inspect future tokens. That belongs to connectivity. It does not decide how many key-value heads are stored either. That arrives two questions later, after everyone has had time for tea.
+
+## 2. Connectivity asks who may look where
+
+Attention scores are calculated only for permitted pairs. The mask or connection pattern decides which pairs exist.
+
+Full bidirectional attention lets every token use every other token. An encoder that is trying to understand a complete sentence can use words on both sides.
+
+Causal attention blocks the future. When predicting token six, the model may use tokens one through six but not token seven. During training, tomorrow’s answer is hidden from today’s query.
+
+Cross-attention takes queries from one sequence and keys and values from another. A text decoder can query image features, or a translation decoder can query the encoded source sentence.
+
+Local and sliding-window attention restrict each token to nearby tokens. Sparse schemes add selected longer connections rather than creating the entire matrix. Swin Transformer applies attention inside local image windows, then shifts the windows in the next layer so information can cross their earlier boundaries.
+
+Connectivity is easiest to see as a matrix. In the interactive panel, full attention fills the square. Causal attention produces a triangle. Local attention produces a band near the diagonal. The pattern is the policy. The coloured cells are the permitted conversations.
+
+<SourceCard
+  mediaType="document"
+  publisher="Microsoft Research"
+  title="Swin Transformer: Hierarchical Vision Transformer using Shifted Windows"
+  url="https://arxiv.org/abs/2103.14030"
+  note="Swin limits attention to local image windows and shifts those windows between layers to create cross-window connections."
+/>
+
+## 3. Heads ask what can be shared
+
+Multi-head attention runs several attention operations in parallel. Different heads can learn different projections and retrieve different relationships.
+
+In ordinary multi-head attention, each query head has its own key head and value head. During generation, the model stores the keys and values for previous tokens in the KV cache. Longer prompts, larger batches and more heads make that cache expensive.
+
+Multi-query attention keeps many query heads but shares one key and value head across all of them. The KV cache becomes much smaller. The price is less variety in the stored keys and values.
+
+Grouped-query attention sits between those designs. Several query heads share each key and value head. Eight query heads might use four KV sets, for example. It keeps more KV variety than multi-query attention and stores less than ordinary multi-head attention.
+
+Multi-head latent attention takes a different route. It compresses the key and value representation into a smaller latent form, then reconstructs what the attention calculation needs. The goal is again to reduce the memory and bandwidth cost of inference, but the mechanism is not GQA with a grander hat.
+
+The head sharing tool makes the trade visible. MHA stores eight KV sets for eight query heads. GQA stores four in the example. MQA stores one. The number of query heads has not changed. What changes is how much key and value state they share.
+
+<SourceCard
+  mediaType="document"
+  publisher="Google Research"
+  title="GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints"
+  url="https://arxiv.org/abs/2305.13245"
+  note="The paper places grouped-query attention between multi-head and multi-query attention by using fewer KV heads than query heads."
+/>
+
+## 4. Growth asks what happens when the input gets longer
+
+With full attention over `n` tokens, there can be `n × n` query-key comparisons. Doubling the sequence length can quadruple the number of pairs. This is the quadratic cost people mean when they complain that attention has expensive taste.
+
+There are several ways to avoid building every pair.
+
+Local attention lets each token inspect a fixed window. If the window stays the same size, the number of comparisons grows roughly with the sequence length rather than its square.
+
+Sparse attention chooses a limited pattern of local, strided, global or learned connections. The exact cost depends on the pattern.
+
+Linear attention rewrites the calculation so it can use an accumulated state rather than the full score matrix. Recurrent linear designs update a bounded state as tokens arrive. They exchange exact softmax attention and unrestricted recall for a different memory system with different behaviour.
+
+Kimi Linear is a recent hybrid example. It combines Kimi Delta Attention, a recurrent linear attention module, with full multi-head latent attention layers. The design uses different kinds of memory in the same model rather than declaring one mechanism the winner of attention.
+
+<SourceCard
+  mediaType="document"
+  publisher="Moonshot AI"
+  title="Kimi Linear: An Expressive, Efficient Attention Architecture"
+  url="https://arxiv.org/abs/2510.26692"
+  note="Kimi Linear combines recurrent Kimi Delta Attention with full MLA layers and reports reduced KV-cache use at long context."
+/>
+
+## 5. Execution asks how the work reaches the hardware
+
+An attention architecture and an attention implementation are related, but they are not the same thing.
+
+FlashAttention calculates exact attention. It does not replace the dot-product score with an approximation and it does not alter a causal mask. It divides the work into tiles so more intermediate data stays in fast on-chip memory, reducing transfers to and from high-bandwidth GPU memory. The mathematical result remains the same apart from ordinary numerical differences in implementation.
+
+PagedAttention addresses a different problem during serving. Autoregressive generation stores a growing KV cache for every request. Those requests have different lengths, which can waste memory through fragmentation and reserved space. PagedAttention manages the KV cache in blocks, borrowing the idea of paging from operating systems.
+
+One improves how an attention calculation moves through the GPU memory hierarchy. The other improves how a serving system allocates stored keys and values across requests. Both can make inference faster in practice. Neither tells the model which token should attend to “mug”.
+
+<SourceCard
+  mediaType="document"
+  publisher="Stanford University"
+  title="FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness"
+  url="https://arxiv.org/abs/2205.14135"
+  note="FlashAttention uses tiling to reduce reads and writes between GPU memory levels while computing exact attention."
+/>
+
+<SourceCard
+  mediaType="document"
+  publisher="vLLM"
+  title="Efficient Memory Management for Large Language Model Serving with PagedAttention"
+  url="https://arxiv.org/abs/2309.06180"
+  note="PagedAttention stores KV-cache blocks non-contiguously to reduce fragmentation and support sharing during LLM serving."
+/>
+
+## 6. Position asks how order enters
+
+Plain attention sees a set of vectors. Without position information or a structural mask, rearranging the tokens rearranges the outputs but does not tell the layer that one token came first.
+
+The original Transformer added fixed sinusoidal vectors to token representations. Different frequencies gave each position a distinct pattern. Learned position embeddings use trainable vectors instead.
+
+Rotary Position Embedding, usually shortened to RoPE, rotates pairs of query and key features according to position. Their dot product then carries relative position information. RoPE changes the geometry of queries and keys before scoring. It is position machinery, not a connectivity pattern.
+
+Some recurrent and linear designs encode order through the state update itself and may omit a separate position embedding. Images may use two-dimensional relative positions. Graphs may use edge types or structural distances. The useful question remains the same: where does the model learn order or structure?
+
+<SourceCard
+  mediaType="document"
+  publisher="RoFormer"
+  title="RoFormer: Enhanced Transformer with Rotary Position Embedding"
+  url="https://arxiv.org/abs/2104.09864"
+  note="RoPE rotates query and key features by position so their interaction contains relative position information."
+/>
+
+## 7. Domain asks what the tokens really are
+
+Text arrives as a sequence. Images are divided into patches with horizontal and vertical relationships. Video adds time to the image grid. Graphs contain nodes whose useful neighbours are defined by edges rather than a neat row.
+
+The core query, key and value idea can work across these domains, but the connection pattern and position scheme should respect the input.
+
+A language decoder commonly uses a causal mask because it predicts the next token. An image encoder usually has the whole image available, so blocking future patches would be a peculiar act of discipline. Local windows make sense for high-resolution images because nearby patches are strongly related and full attention across every patch is expensive. Graph attention can restrict each node to its neighbours. Cross-attention can connect text queries to image, audio or video features.
+
+Calling all of these “attention” is reasonable. Expecting them to use the same geometry is not.
+
+## Three models, three combinations
+
+The seven questions make model descriptions easier to read.
+
+Llama 3 is a decoder language model. It uses causal self-attention, grouped-query attention and RoPE. Those choices concern connectivity, KV-head sharing and position. They do not compete with one another.
+
+DeepSeek-V3 uses multi-head latent attention to reduce the KV representation used during inference. That is mainly a choice about heads and cache inside a much larger model architecture.
+
+Kimi Linear mixes recurrent Kimi Delta Attention with full MLA layers. It changes how work and memory grow with long sequences while retaining occasional full attention layers.
+
+The model name does not reveal a single attention type because there usually is no single type. A model is a stack of choices.
+
+<SourceCard
+  mediaType="article"
+  publisher="Meta AI"
+  title="The Llama 3 Herd of Models"
+  url="https://ai.meta.com/research/publications/the-llama-3-herd-of-models/"
+  note="Meta’s model paper describes Llama 3’s decoder architecture, grouped-query attention and rotary position embeddings."
+/>
+
+<SourceCard
+  mediaType="document"
+  publisher="DeepSeek AI"
+  title="DeepSeek-V3 Technical Report"
+  url="https://arxiv.org/abs/2412.19437"
+  note="The report describes DeepSeek-V3’s use of multi-head latent attention for more efficient inference."
+/>
+
+## Seven questions for each new paper
+
+When a paper announces another attention name, write down seven answers:
+
+1. What scoring rule changed?
+2. What connections are permitted?
+3. How many query, key and value heads exist, and what is cached?
+4. Does work or memory grow quadratically, sparsely or through a running state?
+5. Is the novelty mathematical, a GPU kernel or memory management during serving?
+6. Where does position enter?
+7. What structure does the input have?
+
+Some papers change one answer. Others change several and give the combination a name. The trade should also be stated: quality, context length, training cost, decoding speed, memory, hardware fit or support for a new domain.
+
+Classify FlashAttention under execution, RoPE under position, and GQA under heads and cache. Once those categories stop leaking into one another, attention becomes a set of design choices rather than a vocabulary test.
+
+The acronyms remain. Apparently there are limits to engineering.

@@ -2,6 +2,7 @@
 import { PortableText } from "astro-portabletext";
 import { render } from "astro:content";
 import PortableImage from "../../components/PortableImage.astro";
+import AttentionLab from "../../components/article/AttentionLab.astro";
 import CaseStudyMarker from "../../components/article/CaseStudyMarker.astro";
 import SourceCard from "../../components/article/SourceCard.astro";
 import SystemStage from "../../components/article/SystemStage.astro";
@@ -32,6 +33,7 @@ const portableBody = post.body as Parameters<typeof PortableText>[0]["value"];
 const portableComponents = {
   type: {
     image: PortableImage,
+    attentionLab: AttentionLab,
     caseStudyMarker: CaseStudyMarker,
     sourceCard: SourceCard,
     systemStage: SystemStage,

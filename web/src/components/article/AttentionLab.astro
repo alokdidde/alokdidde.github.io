@@ -1,0 +1,330 @@
+---
+type AttentionLab = {
+  title?: string;
+  intro?: string;
+};
+
+type Props = AttentionLab | { node: AttentionLab };
+
+const props = Astro.props as Props;
+const item = "node" in props ? props.node : props;
+const title = item.title ?? "Build an attention mechanism";
+const intro = item.intro ?? "Change one design choice at a time and watch what it changes.";
+
+const tokens = ["The", "robot", "found", "the", "red", "mug"];
+const axes = [
+  {
+    name: "Scoring",
+    question: "How is relevance measured?",
+    options: [
+      ["Scaled dot product", "Queries and keys meet through a scaled dot product."],
+      ["Additive", "A small learned network scores each query and key pair."],
+      ["Cosine", "Direction matters more than vector magnitude."],
+    ],
+  },
+  {
+    name: "Connectivity",
+    question: "Who may look where?",
+    options: [
+      ["Causal", "Each token can use only the tokens up to its position."],
+      ["Full", "Every token can use every token in the same input."],
+      ["Local", "Each token uses a limited neighbourhood."],
+    ],
+  },
+  {
+    name: "Heads and cache",
+    question: "What do the query heads share?",
+    options: [
+      ["GQA", "Groups of query heads share key and value heads."],
+      ["MHA", "Every query head has its own key and value head."],
+      ["MQA", "All query heads share one key and value head."],
+    ],
+  },
+  {
+    name: "Growth",
+    question: "What grows with sequence length?",
+    options: [
+      ["Full matrix", "Every query is compared with every permitted key."],
+      ["Sparse", "A chosen subset of pairs is compared."],
+      ["Linear state", "A running state replaces the full attention matrix."],
+    ],
+  },
+  {
+    name: "Execution",
+    question: "How is it run and stored?",
+    options: [
+      ["FlashAttention", "Tiling reduces transfers between GPU memory levels."],
+      ["Basic kernel", "The direct implementation materialises more intermediate data."],
+      ["Paged KV", "The serving system manages the KV cache in blocks."],
+    ],
+  },
+  {
+    name: "Position",
+    question: "How does order enter?",
+    options: [
+      ["RoPE", "Position rotates query and key features."],
+      ["Sinusoidal", "Fixed waves encode each position."],
+      ["Learned", "Training learns a vector for each supported position."],
+    ],
+  },
+  {
+    name: "Domain",
+    question: "What structure does the input have?",
+    options: [
+      ["Text", "Tokens form an ordered sequence."],
+      ["Image", "Patches have two-dimensional neighbours."],
+      ["Graph", "Edges define which nodes are related."],
+    ],
+  },
+] as const;
+---
+
+<section class="attention-lab" data-attention-lab aria-label={title}>
+  <div class="attention-lab-wash" aria-hidden="true"></div>
+  <header class="attention-lab-header">
+    <p class="attention-lab-kicker">Interactive field guide</p>
+    <h2>{title}</h2>
+    <p>{intro}</p>
+  </header>
+
+  <div class="attention-lab-tabs" role="tablist" aria-label="Attention demonstrations">
+    <button type="button" role="tab" aria-selected="true" data-lab-tab="visibility">Who sees whom</button>
+    <button type="button" role="tab" aria-selected="false" data-lab-tab="heads">Share the cache</button>
+    <button type="button" role="tab" aria-selected="false" data-lab-tab="builder">Build a stack</button>
+  </div>
+
+  <div class="attention-lab-panel" role="tabpanel" data-lab-panel="visibility">
+    <div class="attention-demo-copy">
+      <p class="attention-demo-index">01 / Connectivity</p>
+      <h3>Choose a mask, then choose a query token.</h3>
+      <div class="attention-chip-row" data-mask-modes>
+        <button type="button" aria-pressed="false" data-mask="full">Full</button>
+        <button type="button" aria-pressed="true" data-mask="causal">Causal</button>
+        <button type="button" aria-pressed="false" data-mask="local">Local</button>
+      </div>
+      <p class="attention-live-note" data-mask-note aria-live="polite"></p>
+    </div>
+
+    <div class="attention-mask-demo">
+      <div class="attention-token-row" aria-label="Select query token">
+        {tokens.map((token, index) => (
+          <button type="button" aria-pressed={index === 5 ? "true" : "false"} data-query={index}>
+            <span>{index + 1}</span>{token}
+          </button>
+        ))}
+      </div>
+      <div class="attention-matrix-wrap">
+        <span class="attention-axis attention-axis-y">queries</span>
+        <span class="attention-axis attention-axis-x">keys</span>
+        <div class="attention-matrix" aria-hidden="true">
+          {tokens.flatMap((_, row) =>
+            tokens.map((__, column) => (
+              <span data-row={row} data-column={column}></span>
+            )),
+          )}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="attention-lab-panel" role="tabpanel" data-lab-panel="heads" hidden>
+    <div class="attention-demo-copy">
+      <p class="attention-demo-index">02 / Heads and KV cache</p>
+      <h3>Queries can keep their variety while sharing stored keys and values.</h3>
+      <div class="attention-chip-row" data-head-modes>
+        <button type="button" aria-pressed="false" data-head-mode="mha">MHA</button>
+        <button type="button" aria-pressed="true" data-head-mode="gqa">GQA</button>
+        <button type="button" aria-pressed="false" data-head-mode="mqa">MQA</button>
+      </div>
+      <p class="attention-live-note" data-head-note aria-live="polite"></p>
+    </div>
+
+    <div class="attention-head-demo">
+      <div>
+        <span class="attention-mini-label">8 query heads</span>
+        <div class="attention-query-heads">
+          {Array.from({ length: 8 }, (_, index) => <span>{index + 1}</span>)}
+        </div>
+      </div>
+      <svg class="attention-head-lines" viewBox="0 0 600 90" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M38 8v42M113 8v42M188 8v42M263 8v42M338 8v42M413 8v42M488 8v42M563 8v42M38 50h525" />
+      </svg>
+      <div>
+        <span class="attention-mini-label" data-kv-label>4 shared key and value sets</span>
+        <div class="attention-kv-heads" data-kv-heads aria-hidden="true"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="attention-lab-panel attention-builder-panel" role="tabpanel" data-lab-panel="builder" hidden>
+    <div class="attention-builder-intro">
+      <p class="attention-demo-index">03 / Seven questions</p>
+      <h3>Change one axis without pretending you changed all seven.</h3>
+      <p>A real model may use one choice from every row. The resulting combination is a design description, not a new species requiring a press release.</p>
+    </div>
+
+    <div class="attention-builder">
+      {axes.map((axis) => (
+        <fieldset data-builder-axis={axis.name}>
+          <legend><strong>{axis.name}</strong><span>{axis.question}</span></legend>
+          <div class="attention-choice-row">
+            {axis.options.map(([choice, detail], index) => (
+              <button
+                type="button"
+                aria-pressed={index === 0 ? "true" : "false"}
+                data-choice={choice}
+                data-detail={detail}
+              >
+                {choice}
+              </button>
+            ))}
+          </div>
+        </fieldset>
+      ))}
+    </div>
+
+    <div class="attention-build-result" aria-live="polite">
+      <span>Your stack</span>
+      <p data-build-summary></p>
+      <ol data-build-details></ol>
+    </div>
+  </div>
+</section>
+
+<script>
+  const labs = document.querySelectorAll<HTMLElement>("[data-attention-lab]");
+
+  labs.forEach((lab) => {
+    const tabs = [...lab.querySelectorAll<HTMLButtonElement>("[data-lab-tab]")];
+    const panels = [...lab.querySelectorAll<HTMLElement>("[data-lab-panel]")];
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        const selected = tab.dataset.labTab;
+        tabs.forEach((item) => item.setAttribute("aria-selected", String(item === tab)));
+        panels.forEach((panel) => {
+          panel.hidden = panel.dataset.labPanel !== selected;
+        });
+      });
+    });
+
+    const maskButtons = [...lab.querySelectorAll<HTMLButtonElement>("[data-mask]")];
+    const queryButtons = [...lab.querySelectorAll<HTMLButtonElement>("[data-query]")];
+    const cells = [...lab.querySelectorAll<HTMLElement>(".attention-matrix [data-row]")];
+    const maskNote = lab.querySelector<HTMLElement>("[data-mask-note]");
+    let mask = "causal";
+    let query = 5;
+
+    const updateMask = () => {
+      cells.forEach((cell) => {
+        const row = Number(cell.dataset.row);
+        const column = Number(cell.dataset.column);
+        const visible = mask === "full" || (mask === "causal" && column <= row) || (mask === "local" && Math.abs(column - row) <= 1);
+        cell.dataset.visible = String(visible);
+        cell.dataset.selected = String(row === query);
+      });
+
+      const visibleKeys = cells.filter((cell) => Number(cell.dataset.row) === query && cell.dataset.visible === "true").length;
+      const token = queryButtons.find((button) => Number(button.dataset.query) === query)?.textContent?.trim() ?? "token";
+      if (maskNote) {
+        const descriptions: Record<string, string> = {
+          full: "Every query can use every key.",
+          causal: "A query can use itself and earlier keys, but not the future.",
+          local: "A query can use only its nearest neighbours in this small window.",
+        };
+        maskNote.textContent = `${token} can use ${visibleKeys} of 6 keys. ${descriptions[mask]}`;
+      }
+    };
+
+    maskButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        mask = button.dataset.mask ?? "causal";
+        maskButtons.forEach((item) => item.setAttribute("aria-pressed", String(item === button)));
+        updateMask();
+      });
+    });
+
+    queryButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        query = Number(button.dataset.query);
+        queryButtons.forEach((item) => item.setAttribute("aria-pressed", String(item === button)));
+        updateMask();
+      });
+    });
+
+    updateMask();
+
+    const headButtons = [...lab.querySelectorAll<HTMLButtonElement>("[data-head-mode]")];
+    const kvHeads = lab.querySelector<HTMLElement>("[data-kv-heads]");
+    const kvLabel = lab.querySelector<HTMLElement>("[data-kv-label]");
+    const headNote = lab.querySelector<HTMLElement>("[data-head-note]");
+
+    const updateHeads = (mode: string) => {
+      const count = mode === "mha" ? 8 : mode === "mqa" ? 1 : 4;
+      if (kvHeads) {
+        kvHeads.replaceChildren(
+          ...Array.from({ length: count }, (_, index) => {
+            const node = document.createElement("span");
+            node.textContent = `KV ${index + 1}`;
+            return node;
+          }),
+        );
+        kvHeads.dataset.count = String(count);
+      }
+      if (kvLabel) kvLabel.textContent = `${count} ${count === 1 ? "shared key and value set" : "key and value sets"}`;
+      if (headNote) {
+        headNote.textContent = mode === "mha"
+          ? "MHA stores one key and value set for every query head."
+          : mode === "mqa"
+            ? "MQA lets every query head use the same key and value set."
+            : "GQA divides the query heads into groups. Each group shares one key and value set.";
+      }
+    };
+
+    headButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        headButtons.forEach((item) => item.setAttribute("aria-pressed", String(item === button)));
+        updateHeads(button.dataset.headMode ?? "gqa");
+      });
+    });
+
+    updateHeads("gqa");
+
+    const axes = [...lab.querySelectorAll<HTMLElement>("[data-builder-axis]")];
+    const summary = lab.querySelector<HTMLElement>("[data-build-summary]");
+    const details = lab.querySelector<HTMLOListElement>("[data-build-details]");
+
+    const updateBuilder = () => {
+      const selected = axes.map((axis) => {
+        const choice = axis.querySelector<HTMLButtonElement>('[aria-pressed="true"]');
+        return {
+          axis: axis.dataset.builderAxis ?? "Choice",
+          choice: choice?.dataset.choice ?? "",
+          detail: choice?.dataset.detail ?? "",
+        };
+      });
+      if (summary) summary.textContent = selected.map((item) => item.choice).join(" + ");
+      if (details) {
+        details.replaceChildren(
+          ...selected.map((item) => {
+            const entry = document.createElement("li");
+            entry.textContent = `${item.axis}: ${item.detail}`;
+            return entry;
+          }),
+        );
+      }
+    };
+
+    axes.forEach((axis) => {
+      const choices = [...axis.querySelectorAll<HTMLButtonElement>("[data-choice]")];
+      choices.forEach((choice) => {
+        choice.addEventListener("click", () => {
+          choices.forEach((item) => item.setAttribute("aria-pressed", String(item === choice)));
+          updateBuilder();
+        });
+      });
+    });
+
+    updateBuilder();
+  });
+</script>
