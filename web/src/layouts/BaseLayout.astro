@@ -6,6 +6,12 @@ import { getImage } from "astro:assets";
 import "@fontsource-variable/cormorant-garamond/wght.css";
 import "@fontsource-variable/dm-sans/wght.css";
 import "@fontsource-variable/jetbrains-mono/wght.css";
+// Preloaded below: without these the browser only discovers the font URLs
+// after the stylesheet parses, which is long enough to paint in the fallback
+// and then swap.
+import displayFont from "@fontsource-variable/cormorant-garamond/files/cormorant-garamond-latin-wght-normal.woff2?url";
+import sansFont from "@fontsource-variable/dm-sans/files/dm-sans-latin-wght-normal.woff2?url";
+import monoFont from "@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2?url";
 import { site } from "../data/site";
 import "../styles/global.css";
 
@@ -66,6 +72,9 @@ const structuredData = article
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
+    <link rel="preload" as="font" type="font/woff2" href={sansFont} crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href={displayFont} crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href={monoFont} crossorigin />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
     <meta name="theme-color" content="#faf6f1" />

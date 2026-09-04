@@ -1,6 +1,4 @@
 ---
-import { Image } from "astro:assets";
-import heroWorkshop from "../assets/hero-workshop.png";
 import HeroSystemArt from "../components/HeroSystemArt.astro";
 import WorkIllustration from "../components/WorkIllustration.astro";
 import { otherBuilds, selectedWork, site, workingQuestions } from "../data/site";
@@ -22,7 +20,10 @@ const formatDate = (value: string) =>
     <div class="ambient-glow hero-glow-a" aria-hidden="true"></div>
     <div class="ambient-glow hero-glow-b" aria-hidden="true"></div>
 
-    <div class="shell hero-editorial-grid">
+    <div class="shell">
+      <div class="hero-plate">
+        <span class="hero-plate-wash" aria-hidden="true"></span>
+        <div class="hero-editorial-grid">
       <div class="hero-copy-block">
         <p class="eyebrow">Robotics / AI / Systems</p>
         <h1>
@@ -38,31 +39,23 @@ const formatDate = (value: string) =>
         </div>
       </div>
 
-      <div class="hero-collage" aria-label="Illustrations of Alok and his robotics work">
-        <figure class="cutout cutout-arch" id="hero-art" data-float="slow">
+      <div class="hero-collage">
+        <figure class="hero-plate-art" id="hero-art">
           <HeroSystemArt />
         </figure>
-        <figure class="cutout cutout-disc" data-float="reverse">
-          <Image
-            src={heroWorkshop}
-            alt="Alok soldering electronics beside a 3D printer in his workshop"
-            widths={[480, 720, 960, 1200, 1448]}
-            sizes="(max-width: 800px) 78vw, 38vw"
-            format="webp"
-            quality={92}
-            loading="eager"
-          />
-        </figure>
+      </div>
+        </div>
       </div>
     </div>
 
-    <div class="ticker" aria-hidden="true">
-      <div class="ticker-track">
-        <span>OPEN ROBOTICS</span><i>✳</i><span>PHYSICAL AI</span><i>✳</i><span>HEALTHCARE SYSTEMS</span><i>✳</i><span>RETRIEVAL BEYOND EMBEDDINGS</span><i>✳</i>
-        <span>OPEN ROBOTICS</span><i>✳</i><span>PHYSICAL AI</span><i>✳</i><span>HEALTHCARE SYSTEMS</span><i>✳</i><span>RETRIEVAL BEYOND EMBEDDINGS</span><i>✳</i>
-      </div>
-    </div>
   </section>
+
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track">
+      <span>OPEN ROBOTICS</span><i>✳</i><span>PHYSICAL AI</span><i>✳</i><span>HEALTHCARE SYSTEMS</span><i>✳</i><span>RETRIEVAL BEYOND EMBEDDINGS</span><i>✳</i>
+      <span>OPEN ROBOTICS</span><i>✳</i><span>PHYSICAL AI</span><i>✳</i><span>HEALTHCARE SYSTEMS</span><i>✳</i><span>RETRIEVAL BEYOND EMBEDDINGS</span><i>✳</i>
+    </div>
+  </div>
 
   <section class="work-section" id="work">
     <div class="shell">
@@ -80,9 +73,22 @@ const formatDate = (value: string) =>
         {selectedWork.map((work, index) => (
           <article id={`work-${work.number}`} class:list={["work-card", { "work-card-reverse": index % 2 === 1 }]} data-reveal>
             <div class="work-visual-wrap">
-              <div class={`work-visual work-shape-${work.shape}`}>
-                <WorkIllustration id={`project-${work.number}`} visual={work.visual} />
-              </div>
+              {work.href ? (
+                <a
+                  class={`work-visual work-shape-${work.shape}`}
+                  href={work.href}
+                  tabindex="-1"
+                  aria-hidden="true"
+                  target={work.href.startsWith("http") ? "_blank" : undefined}
+                  rel={work.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                >
+                  <WorkIllustration id={`project-${work.number}`} visual={work.visual} />
+                </a>
+              ) : (
+                <div class={`work-visual work-shape-${work.shape}`}>
+                  <WorkIllustration id={`project-${work.number}`} visual={work.visual} />
+                </div>
+              )}
               <span class="work-figure">Fig. {work.number}</span>
             </div>
 
@@ -91,7 +97,20 @@ const formatDate = (value: string) =>
                 <span>{work.category}</span>
                 <span>{work.status}</span>
               </div>
-              <h3>{work.title}</h3>
+              <h3>
+                {work.href ? (
+                  <a
+                    class="work-title-link"
+                    href={work.href}
+                    target={work.href.startsWith("http") ? "_blank" : undefined}
+                    rel={work.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                  >
+                    {work.title}
+                  </a>
+                ) : (
+                  work.title
+                )}
+              </h3>
               <p class="work-summary">{work.summary}</p>
               <p class="work-detail">{work.detail}</p>
               <ul class="tag-list" aria-label="Technologies and themes">

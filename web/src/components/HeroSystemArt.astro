@@ -1,82 +1,133 @@
 <svg
   class="hero-system-art"
-  viewBox="0 0 520 720"
-  preserveAspectRatio="xMidYMid slice"
+  viewBox="0 0 720 448"
+  preserveAspectRatio="xMidYMid meet"
   role="img"
   aria-labelledby="hero-robot-title"
 >
-  <title id="hero-robot-title">A softly animated industrial robotic arm</title>
-  <defs>
-    <linearGradient id="hero-robot-paper" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#f4efe4" />
-      <stop offset="1" stop-color="#e9eee7" />
-    </linearGradient>
-    <linearGradient id="hero-robot-field" x1="0.12" y1="0.08" x2="0.9" y2="0.88">
-      <stop offset="0" stop-color="#d7e9d7" />
-      <stop offset="0.52" stop-color="#9fd9d3" />
-      <stop offset="1" stop-color="#e7bd69" />
-    </linearGradient>
-  </defs>
+  <title id="hero-robot-title">
+    A schematic of a robot arm, the message bus between them, and the model that
+    drives it
+  </title>
 
-  <rect width="520" height="720" fill="url(#hero-robot-paper)" />
+  <!-- Shared rail the whole cell is mounted on. -->
+  <g class="hero-robot-bench">
+    <path d="M24 376h672" />
+    <path
+      d="M56 376v12M104 376v7M152 376v12M200 376v7M248 376v12M296 376v7M344 376v12M392 376v7M440 376v12M488 376v7M536 376v12M584 376v7M632 376v12M680 376v7"
+    />
+  </g>
 
-  <path
-    class="hero-robot-field"
-    d="M72 137C143 50 314 41 419 111c91 61 111 181 59 278-54 101-70 208-181 248-119 43-239-25-264-135-20-86 37-155 42-228 4-57-33-91-3-137Z"
-    fill="url(#hero-robot-field)"
-  />
-  <circle class="hero-robot-halo" cx="283" cy="341" r="205" />
-  <path class="hero-robot-guide" d="M49 577h417M79 205h65M394 461h68" />
+  <!-- Span between the physical cell and the model that drives it. -->
+  <g class="hero-robot-guide">
+    <path d="M116 124V96M604 140V96" />
+    <path class="hero-robot-dim" d="M116 96h488" />
+    <path d="M112 92v8M600 92v8" />
+  </g>
 
-  <g class="hero-robot-object">
-    <circle class="hero-robot-object-ring" cx="426" cy="180" r="28" />
-    <circle class="hero-robot-object-core" cx="426" cy="180" r="9" />
+  <path class="hero-robot-envelope" d="M36 262A190 190 0 0 1 268 106" />
+  <circle class="hero-scan" cx="116" cy="300" r="126" />
+
+  <!-- 1 / The robot. -->
+  <g class="hero-robot-base">
+    <rect x="56" y="330" width="118" height="46" rx="14" />
+    <path d="M92 330l12-26h24l12 26" />
+    <circle cx="78" cy="353" r="3.5" />
+    <circle cx="96" cy="353" r="3.5" />
+    <circle cx="114" cy="353" r="3.5" />
   </g>
 
   <g class="hero-robot-arm">
-    <g class="hero-robot-link" transform="translate(175 513) rotate(-54)">
-      <rect x="0" y="-23" width="162" height="46" rx="23" />
-      <path d="M47 0h68" />
+    <g class="hero-robot-link" transform="translate(116 300) rotate(-60.5)">
+      <path d="M0-19 106-13a13 13 0 0 1 0 26L0 19a19 19 0 0 1 0-38Z" />
+      <path class="hero-robot-link-seam" d="M30 0h50" />
     </g>
-    <g class="hero-robot-link" transform="translate(270 382) rotate(-29)">
-      <rect x="0" y="-20" width="142" height="40" rx="20" />
-      <path d="M42 0h62" />
+    <g class="hero-robot-link" transform="translate(168 208) rotate(-26)">
+      <path d="M0-14 87-9a9 9 0 0 1 0 18L0 14a14 14 0 0 1 0-28Z" />
+      <path class="hero-robot-link-seam" d="M26 0h44" />
     </g>
 
-    <g class="hero-robot-joint" transform="translate(175 513)">
-      <circle class="hero-robot-joint-shell" r="42" />
-      <circle class="hero-robot-joint-ring" r="20" />
-      <circle class="hero-robot-joint-core" r="7" />
-    </g>
-    <g class="hero-robot-joint hero-robot-joint-elbow" transform="translate(270 382)">
-      <circle class="hero-robot-joint-shell" r="35" />
-      <circle class="hero-robot-joint-ring" r="17" />
-      <circle class="hero-robot-joint-core" r="6" />
-    </g>
-    <g class="hero-robot-joint hero-robot-joint-wrist" transform="translate(394 313)">
-      <circle class="hero-robot-joint-shell" r="25" />
+    <g class="hero-robot-joint" transform="translate(116 300)">
+      <circle class="hero-robot-joint-shell" r="24" />
       <circle class="hero-robot-joint-ring" r="12" />
       <circle class="hero-robot-joint-core" r="5" />
     </g>
+    <g class="hero-robot-joint hero-robot-joint-elbow" transform="translate(168 208)">
+      <circle class="hero-robot-joint-shell" r="18" />
+      <circle class="hero-robot-joint-ring" r="9" />
+      <circle class="hero-robot-joint-core" r="4" />
+    </g>
+    <g class="hero-robot-joint hero-robot-joint-wrist" transform="translate(246 170)">
+      <circle class="hero-robot-joint-shell" r="13" />
+      <circle class="hero-robot-joint-ring" r="6.5" />
+      <circle class="hero-robot-joint-core" r="3" />
+    </g>
 
-    <g class="hero-robot-gripper" transform="translate(394 313) rotate(-20)">
-      <path class="hero-robot-gripper-neck" d="M22 0h37" />
-      <circle class="hero-robot-gripper-joint" cx="62" cy="0" r="10" />
-      <path class="hero-robot-gripper-claw" d="M70-4l22-18 17 2M70 4l22 18 17-2" />
+    <g class="hero-robot-gripper" transform="translate(246 170) rotate(-26)">
+      <path class="hero-robot-gripper-neck" d="M10 0h13" />
+      <rect class="hero-robot-gripper-plate" x="23" y="-14" width="9" height="28" rx="4" />
+      <path class="hero-robot-gripper-claw" d="M32-10h11v6M32 10h11v-6" />
     </g>
   </g>
 
-  <g class="hero-robot-base">
-    <rect x="82" y="558" width="190" height="68" rx="25" />
-    <path d="M109 558l20-46h92l22 46" />
-    <circle cx="122" cy="592" r="4" />
-    <circle cx="145" cy="592" r="4" />
-    <circle cx="168" cy="592" r="4" />
+  <g class="hero-robot-object">
+    <path class="hero-robot-object-ring" d="M306 147 299.5 158.3h-13L280 147l6.5-11.3h13Z" />
+    <circle class="hero-robot-object-core" cx="293" cy="147" r="4.5" />
+  </g>
+  <g class="hero-robot-marks">
+    <path d="M270 130v-9h9M307 121h9v9M316 164v9h-9M279 173h-9v-9" />
   </g>
 
-  <path class="hero-robot-signal" d="M427 209c-9 37-22 58-45 77" />
-  <g class="hero-robot-marks">
-    <path d="M442 127v18M433 136h18" />
-    <circle cx="459" cy="154" r="4" />
+  <!-- 2 / The infrastructure between them. -->
+  <path class="hero-robot-signal" d="M266 162C292 182 300 198 316 212" />
+  <rect class="hero-node" x="320" y="194" width="160" height="62" rx="16" />
+  <rect class="hero-slot hero-slot-filled" x="350" y="214" width="22" height="22" rx="6" />
+  <rect class="hero-slot hero-slot-filled" x="389" y="214" width="22" height="22" rx="6" />
+  <rect class="hero-slot hero-slot-empty" x="428" y="214" width="22" height="22" rx="6" />
+  <path class="hero-robot-signal" d="M484 220C496 218 504 210 514 202" />
+
+  <!-- 3 / The model. -->
+  <rect class="hero-node" x="516" y="148" width="176" height="152" rx="18" />
+  <g class="hero-cells">
+    <rect class="hero-cell hero-cell-on" x="542" y="175" width="20" height="20" rx="5" />
+    <rect class="hero-cell" x="568" y="175" width="20" height="20" rx="5" />
+    <rect class="hero-cell" x="594" y="175" width="20" height="20" rx="5" />
+    <rect class="hero-cell hero-cell-hot" x="620" y="175" width="20" height="20" rx="5" />
+    <rect class="hero-cell" x="646" y="175" width="20" height="20" rx="5" />
+
+    <rect class="hero-cell" x="542" y="201" width="20" height="20" rx="5" />
+    <rect class="hero-cell hero-cell-on" x="568" y="201" width="20" height="20" rx="5" />
+    <rect class="hero-cell hero-cell-on" x="594" y="201" width="20" height="20" rx="5" />
+    <rect class="hero-cell" x="620" y="201" width="20" height="20" rx="5" />
+    <rect class="hero-cell" x="646" y="201" width="20" height="20" rx="5" />
+
+    <rect class="hero-cell" x="542" y="227" width="20" height="20" rx="5" />
+    <rect class="hero-cell" x="568" y="227" width="20" height="20" rx="5" />
+    <rect class="hero-cell hero-cell-on" x="594" y="227" width="20" height="20" rx="5" />
+    <rect class="hero-cell hero-cell-hot" x="620" y="227" width="20" height="20" rx="5" />
+    <rect class="hero-cell" x="646" y="227" width="20" height="20" rx="5" />
+
+    <rect class="hero-cell" x="542" y="253" width="20" height="20" rx="5" />
+    <rect class="hero-cell hero-cell-on" x="568" y="253" width="20" height="20" rx="5" />
+    <rect class="hero-cell" x="594" y="253" width="20" height="20" rx="5" />
+    <rect class="hero-cell" x="620" y="253" width="20" height="20" rx="5" />
+    <rect class="hero-cell hero-cell-on" x="646" y="253" width="20" height="20" rx="5" />
+  </g>
+
+  <!-- Commands returning to the cell. -->
+  <path
+    class="hero-robot-signal hero-robot-return"
+    d="M604 302c0 32-52 44-114 44H372c-56 0-114-6-164-22"
+  />
+
+  <!-- Motion vectors: packets travelling the three flows. -->
+  <circle class="hero-flow-dot hero-flow-dot-a" r="4" />
+  <circle class="hero-flow-dot hero-flow-dot-b" r="4" />
+  <circle class="hero-flow-dot hero-flow-dot-c" r="3.5" />
+
+  <g class="hero-stage-label">
+    <text x="56" y="410">01 / ROBOT</text>
+    <text x="320" y="410">02 / BUS</text>
+    <text x="516" y="410">03 / MODEL</text>
   </g>
 </svg>

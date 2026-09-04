@@ -11,14 +11,18 @@ import { getLocalEntry, getPosts, type BlogPost } from "../../lib/posts";
 
 export async function getStaticPaths() {
   const posts = await getPosts();
-  return posts.map((post) => ({
+  return posts.map((post, index) => ({
     params: { slug: post.slug },
-    props: { post },
+    props: {
+      post,
+      // Wrap around so the last piece still offers somewhere to go next.
+      next: posts.length > 1 ? posts[(index + 1) % posts.length] : undefined,
+    },
   }));
 }
 
-type Props = { post: BlogPost };
-const { post } = Astro.props;
+type Props = { post: BlogPost; next?: BlogPost };
+const { post, next } = Astro.props;
 let LocalContent: Awaited<ReturnType<typeof render>>["Content"] | undefined;
 
 if (post.source === "local") {
@@ -87,5 +91,18 @@ const formatDate = (value: string) =>
         <PortableText value={portableBody} components={portableComponents} />
       )}
     </div>
+
+    <footer class="article-footer">
+      <p class="article-end-mark" aria-hidden="true">✳</p>
+      {next && (
+        <a class="article-next" href={`/blog/${next.slug}`}>
+          <span class="article-next-label">Read next</span>
+          <h2>{next.title}</h2>
+          <p>{next.summary}</p>
+          <span class="article-next-arrow" aria-hidden="true">↗</span>
+        </a>
+      )}
+      <a class="back-link article-footer-back" href="/blog">← All writing</a>
+    </footer>
   </article>
 </BaseLayout>

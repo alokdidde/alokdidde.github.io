@@ -42,7 +42,7 @@ export const selectedWork = [
       "You review the schematic, PCB, and 3D assembly in a local workspace, steer the next change, and prepare the finished board for manufacturing.",
     tags: ["TypeScript", "Bun", "tscircuit", "Hardware"],
     visual: "fulmetry",
-    shape: "soft-square",
+    shape: "lozenge",
     href: "/work/fulmetry",
   },
   {
@@ -57,7 +57,7 @@ export const selectedWork = [
       "Gaussian Splatting informed navigation, CNNs handled pest detection, and forward/inverse kinematics drove precise manipulation.",
     tags: ["Gaussian Splatting", "Computer vision", "Kinematics"],
     visual: "agriculture",
-    shape: "circle",
+    shape: "capsule",
     href: null,
   },
   {
@@ -72,7 +72,7 @@ export const selectedWork = [
       "Early experiments reached roughly 80% recall on the target task, compared with under 20% for the embedding baseline. The experiment examines the search behaviour behind that gap.",
     tags: ["RAG", "Monte Carlo search", "LLMs"],
     visual: "retrieval",
-    shape: "soft-square",
+    shape: "lozenge-flip",
     href: null,
   },
   {
@@ -87,7 +87,7 @@ export const selectedWork = [
       "Work across startups and scaled healthcare companies focused on reliability beyond the happy path.",
     tags: ["Distributed systems", "Healthcare", "Applied AI"],
     visual: "healthcare",
-    shape: "diamond",
+    shape: "vault",
     href: null,
   },
 ] as const;

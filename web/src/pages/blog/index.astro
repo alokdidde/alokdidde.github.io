@@ -16,7 +16,7 @@ const formatDate = (value: string) =>
   title="Blog"
   description="Field notes about robotics, engineering, AI, and building in the open."
 >
-  <div class="measure page-main writing-index">
+  <div class="page-main writing-index">
     <header class="page-header">
       <p class="section-label">Field notes / ideas / experiments</p>
       <h1>Writing</h1>
@@ -24,17 +24,30 @@ const formatDate = (value: string) =>
         Notes from the workshop: robotics, software, AI, and whatever I’m learning
         while building in the open.
       </p>
+      {posts.length > 0 && (
+        <p class="page-count">
+          {String(posts.length).padStart(2, "0")} {posts.length === 1 ? "piece" : "pieces"}
+        </p>
+      )}
     </header>
 
     <div class="post-list">
-      {posts.map((post) => (
+      {posts.map((post, index) => (
         <a class="post-card" href={`/blog/${post.slug}`}>
+          <span class="post-index" aria-hidden="true">
+            {String(index + 1).padStart(2, "0")}
+          </span>
           <time class="post-date" datetime={post.publishedAt}>
             {formatDate(post.publishedAt)}
           </time>
-          <div>
+          <div class="post-body">
             <h2>{post.title}</h2>
             <p>{post.summary}</p>
+            {post.tags.length > 0 && (
+              <p class="post-tags">
+                {post.tags.slice(0, 4).join(" · ")}
+              </p>
+            )}
           </div>
           <span class="post-arrow" aria-hidden="true">↗</span>
         </a>
