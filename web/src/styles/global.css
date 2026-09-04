@@ -1963,7 +1963,6 @@ a.work-visual {
 
 .post-list {
   display: grid;
-  margin-top: 1rem;
 }
 
 .post-index {
@@ -1993,10 +1992,6 @@ a.work-visual {
   grid-template-columns: 2.4rem 7rem minmax(0, 1fr) 1.6rem;
   text-decoration: none;
   transition: background 200ms ease;
-}
-
-.post-list > .post-card:first-child {
-  border-top: 1px solid var(--line);
 }
 
 .post-card:hover {
