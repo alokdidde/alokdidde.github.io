@@ -1,0 +1,40 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { labTools } from "../../data/lab";
+---
+
+<BaseLayout
+  title="Lab"
+  description="Interactive tools for understanding LLMs and the architectures behind them."
+>
+  <div class="page-main writing-index">
+    <header class="page-header">
+      <p class="section-label">Tools / models / mechanisms</p>
+      <h1>Lab</h1>
+      <p class="page-intro">
+        Small interactive tools for seeing how language models work: change one
+        design choice and watch what it changes.
+      </p>
+      <p class="page-count">
+        {String(labTools.length).padStart(2, "0")} {labTools.length === 1 ? "tool" : "tools"}
+      </p>
+    </header>
+
+    <div class="post-list">
+      {labTools.map((tool, index) => (
+        <a class="post-card" href={`/lab/${tool.slug}`}>
+          <span class="post-index" aria-hidden="true">
+            {String(index + 1).padStart(2, "0")}
+          </span>
+          <span class="post-date">{tool.kind}</span>
+          <div class="post-body">
+            <h2>{tool.title}</h2>
+            <p>{tool.summary}</p>
+            <p class="post-tags">{tool.tags.join(" · ")}</p>
+          </div>
+          <span class="post-arrow" aria-hidden="true">↗</span>
+        </a>
+      ))}
+    </div>
+  </div>
+</BaseLayout>
