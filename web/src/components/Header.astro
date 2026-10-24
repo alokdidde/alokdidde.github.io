@@ -15,6 +15,7 @@ const isHome = pathname === "/";
     <nav class="nav-links" aria-label="Primary navigation">
       <a href={isHome ? "#work" : "/#work"}>Work</a>
       <a href="/blog" aria-current={pathname.startsWith("/blog") ? "page" : undefined}>Writing</a>
+      <a href="/lab" aria-current={pathname.startsWith("/lab") ? "page" : undefined}>Lab</a>
       <a href={`mailto:${site.email}`}>Contact <span aria-hidden="true">↗</span></a>
     </nav>
   </div>

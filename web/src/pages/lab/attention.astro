@@ -1,0 +1,34 @@
+---
+import AttentionLab from "../../components/article/AttentionLab.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { labTools } from "../../data/lab";
+
+const tool = labTools.find((entry) => entry.slug === "attention")!;
+---
+
+<BaseLayout title={tool.title} description={tool.summary}>
+  <article class="measure page-main">
+    <a class="back-link" href="/lab">← All tools</a>
+    <header class="article-header">
+      <span class="post-date">Lab / {tool.kind}</span>
+      <h1>{tool.title}</h1>
+      <p class="article-summary">{tool.summary}</p>
+      <div class="tag-row" aria-label="Tags">
+        {tool.tags.map((tag) => <span class="tag">{tag}</span>)}
+      </div>
+    </header>
+
+    <div class="prose">
+      <AttentionLab title={tool.title} intro="Change one design choice at a time and watch what it changes." />
+      <p>
+        The ideas behind this tool are explained in
+        <a href={tool.relatedPost.href}>{tool.relatedPost.title}</a>.
+      </p>
+    </div>
+
+    <footer class="article-footer">
+      <p class="article-end-mark" aria-hidden="true">✳</p>
+      <a class="back-link article-footer-back" href="/lab">← All tools</a>
+    </footer>
+  </article>
+</BaseLayout>
