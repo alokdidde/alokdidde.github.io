@@ -5,6 +5,7 @@ import {
 import { getCollection, type CollectionEntry } from "astro:content";
 import { defineQuery } from "groq";
 import { sanityClient } from "sanity:client";
+import { movedToLab } from "../data/lab";
 
 export type BlogPost = {
   source: "local" | "sanity";
@@ -79,6 +80,11 @@ async function getLocalPosts(): Promise<BlogPost[]> {
 }
 
 export async function getPosts(): Promise<BlogPost[]> {
+  const posts = await getAllPosts();
+  return posts.filter((post) => !(post.slug in movedToLab));
+}
+
+async function getAllPosts(): Promise<BlogPost[]> {
   try {
     const posts = await sanityClient.fetch(BLOG_POSTS_QUERY);
 

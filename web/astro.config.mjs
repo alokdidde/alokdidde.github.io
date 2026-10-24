@@ -14,6 +14,10 @@ export default defineConfig({
   site: SITE_URL,
   output: "static",
   trailingSlash: "never",
+  // Pieces that moved from Writing into the Lab (see src/data/lab.ts).
+  redirects: {
+    "/blog/attention-is-seven-questions-wearing-one-name": "/lab/attention",
+  },
   integrations: [
     mdx(),
     sitemap(),

@@ -1,0 +1,45 @@
+---
+type GuideItem = {
+  index: string;
+  title: string;
+  body: string;
+  terms?: readonly string[];
+  source?: { title: string; url: string };
+};
+
+type Props = {
+  kicker: string;
+  title: string;
+  intro: string;
+  items: readonly GuideItem[];
+};
+
+const { kicker, title, intro, items } = Astro.props;
+---
+
+<section class="lab-guide" aria-label={title}>
+  <header class="lab-guide-header">
+    <p class="attention-lab-kicker">{kicker}</p>
+    <h2>{title}</h2>
+    <p>{intro}</p>
+  </header>
+  <div class="lab-guide-grid">
+    {items.map((item) => (
+      <article class="lab-guide-card">
+        <span class="attention-demo-index">{item.index}</span>
+        <h3>{item.title}</h3>
+        <p>{item.body}</p>
+        {item.terms && (
+          <ul class="lab-guide-terms">
+            {item.terms.map((term) => <li>{term}</li>)}
+          </ul>
+        )}
+        {item.source && (
+          <a class="lab-guide-source" href={item.source.url} target="_blank" rel="noreferrer noopener">
+            Source: {item.source.title} ↗
+          </a>
+        )}
+      </article>
+    ))}
+  </div>
+</section>

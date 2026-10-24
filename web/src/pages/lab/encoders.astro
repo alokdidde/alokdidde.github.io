@@ -1,0 +1,75 @@
+---
+import EncoderLab from "../../components/article/EncoderLab.astro";
+import LabGuide from "../../components/LabGuide.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { labTools } from "../../data/lab";
+
+const tool = labTools.find((entry) => entry.slug === "encoders")!;
+
+const steps = [
+  {
+    index: "01 / Tokenize",
+    title: "Split the text into tokens",
+    body: "Text is cut into subword pieces from a fixed vocabulary. BERT-style encoders also add a [CLS] token at the start and a [SEP] token at the end.",
+    terms: ["WordPiece", "[CLS]", "[SEP]"],
+  },
+  {
+    index: "02 / Embed",
+    title: "Look each token up in a table",
+    body: "Each token ID selects a learned row of numbers, and a position embedding is added so order is not lost. At this point “bank” has the same vector in every sentence.",
+    terms: ["Token embedding", "Position embedding"],
+  },
+  {
+    index: "03 / Attend both ways",
+    title: "Let every token read the whole sentence",
+    body: "Encoder self-attention has no causal mask, so a token can use words on both sides. That is how “bank” can lean towards rivers or money depending on what follows it. A decoder only looks left.",
+    terms: ["Bidirectional", "No causal mask"],
+    source: { title: "BERT", url: "https://arxiv.org/abs/1810.04805" },
+  },
+  {
+    index: "04 / Stack layers",
+    title: "Repeat attention and a feed-forward block",
+    body: "Each layer is attention followed by a small MLP, with residual connections around both. A real encoder stacks 6 to 24 of them; the toy in this tool runs one attention step.",
+    terms: ["Residual", "Feed-forward", "Layer norm"],
+  },
+  {
+    index: "05 / Pool",
+    title: "Turn many vectors into one",
+    body: "To represent the whole sentence, take the [CLS] output or average the token outputs. Sentence-embedding models are fine-tuned so that this pooled vector places similar meanings close together.",
+    terms: ["Mean pooling", "[CLS] pooling"],
+    source: { title: "Sentence-BERT", url: "https://arxiv.org/abs/1908.10084" },
+  },
+  {
+    index: "06 / Compare",
+    title: "Measure the angle between vectors",
+    body: "Cosine similarity compares the direction of two vectors and ignores their length. It is the usual score behind semantic search, clustering and retrieval.",
+    terms: ["Cosine similarity", "Retrieval", "Clustering"],
+  },
+] as const;
+---
+
+<BaseLayout title={tool.title} description={tool.summary}>
+  <div class="page-main lab-tool-page">
+    <a class="back-link" href="/lab">← All tools</a>
+    <header class="page-header">
+      <p class="section-label">Lab / {tool.kind}</p>
+      <h1>{tool.title}</h1>
+      <p class="page-intro">
+        An encoder reads a whole input at once and turns it into vectors: one per token, and one for the
+        whole input once those are pooled. This toy uses six readable dimensions instead of hundreds of
+        learned ones, so you can watch the numbers move.
+      </p>
+    </header>
+
+    <div class="prose">
+      <EncoderLab />
+    </div>
+
+    <LabGuide
+      kicker="Field guide"
+      title="Six steps from text to vector"
+      intro="The same pipeline sits behind BERT, sentence-embedding models and the text side of retrieval systems."
+      items={steps}
+    />
+  </div>
+</BaseLayout>

@@ -1,22 +1,24 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { labTools } from "../../data/lab";
+
+const count: number = labTools.length;
 ---
 
 <BaseLayout
   title="Lab"
-  description="Interactive tools for understanding LLMs and the architectures behind them."
+  description="Interactive tools for seeing how models work, from attention to encoders."
 >
   <div class="page-main writing-index">
     <header class="page-header">
       <p class="section-label">Tools / models / mechanisms</p>
       <h1>Lab</h1>
       <p class="page-intro">
-        Small interactive tools for seeing how language models work: change one
+        Small interactive tools for seeing how models work inside: change one
         design choice and watch what it changes.
       </p>
       <p class="page-count">
-        {String(labTools.length).padStart(2, "0")} {labTools.length === 1 ? "tool" : "tools"}
+        {String(count).padStart(2, "0")} {count === 1 ? "tool" : "tools"}
       </p>
     </header>
 
