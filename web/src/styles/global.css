@@ -3801,3 +3801,333 @@ html.js [data-reveal].is-visible {
     display: none;
   }
 }
+
+/* Encoder lab: reuses the attention-lab shell, adds vector tables and a
+   similarity grid. --level runs 0..1 and drives the cell wash. */
+.encoder-vector-table {
+  display: grid;
+  align-self: center;
+  gap: 0.28rem;
+  grid-template-columns: minmax(4.2rem, auto) repeat(6, minmax(0, 1fr));
+}
+
+.encoder-vector-table span,
+.encoder-strip span,
+.encoder-sim-grid button {
+  display: grid;
+  min-width: 0;
+  min-height: 2.1rem;
+  place-items: center;
+  border: 1px solid rgba(22, 48, 46, 0.12);
+  border-radius: 0.45rem;
+  background: rgb(var(--paper-light-rgb) / 0.9);
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.encoder-vector-table span:not(.encoder-dim-label):not(.encoder-token-label),
+.encoder-strip span,
+.encoder-sim-grid button {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(131, 205, 208, calc(0.06 + var(--level, 0) * 0.86)),
+      rgba(240, 195, 109, calc(0.04 + var(--level, 0) * 0.74))
+    ),
+    rgb(var(--paper-light-rgb) / 0.9);
+}
+
+.encoder-vector-table .encoder-dim-label,
+.encoder-vector-table .encoder-token-label {
+  min-height: 0;
+  border: 0;
+  background: none;
+  color: var(--ink-faint);
+  font-size: 0.48rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.encoder-vector-table .encoder-token-label {
+  justify-items: start;
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.encoder-context-demo {
+  display: grid;
+  align-self: center;
+  gap: 2rem;
+}
+
+.encoder-token-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.42rem;
+}
+
+.encoder-token-row button {
+  flex: 1 1 4.2rem;
+  min-width: 0;
+  padding: 0.6rem 0.4rem;
+  border: 1px solid rgba(22, 48, 46, 0.18);
+  border-radius: 0.5rem;
+  background:
+    linear-gradient(
+      0deg,
+      rgba(131, 205, 208, calc(var(--weight, 0) * 1.6)) 0%,
+      rgba(240, 195, 109, calc(var(--weight, 0) * 1.2)) 100%
+    ),
+    rgb(var(--paper-light-rgb) / 0.94);
+  font-size: 0.72rem;
+  transition: opacity 180ms ease, border-color 180ms ease;
+}
+
+.encoder-token-row button span {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: var(--ink-soft);
+  font-family: var(--mono);
+  font-size: 0.5rem;
+}
+
+.encoder-token-row button[aria-pressed="true"] {
+  border-color: var(--teal-dark);
+  box-shadow: inset 0 0 0 1px var(--teal-dark);
+}
+
+.encoder-token-row button[data-hidden="true"] {
+  opacity: 0.32;
+  border-style: dashed;
+}
+
+.encoder-shift {
+  display: grid;
+  gap: 1.2rem;
+  padding: 1.6rem;
+  border: 1px solid rgba(22, 48, 46, 0.18);
+  border-radius: 0.5rem 3rem 0.5rem 3rem / 0.5rem 1.6rem 0.5rem 1.6rem;
+  background: rgb(var(--paper-light-rgb) / 0.62);
+}
+
+.encoder-strip {
+  display: grid;
+  gap: 0.3rem;
+  margin-top: 0.6rem;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.encoder-strip span {
+  position: relative;
+  min-height: 3.1rem;
+  padding-top: 0.9rem;
+}
+
+.encoder-strip span::before {
+  position: absolute;
+  top: 0.35rem;
+  color: var(--ink-faint);
+  font-size: 0.42rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  content: attr(data-dim);
+}
+
+.encoder-sentence-list {
+  margin: 0.4rem 0 0;
+  padding-left: 1.2rem;
+  color: var(--ink-soft);
+  font-size: 0.74rem;
+  line-height: 1.7;
+}
+
+.encoder-sim-wrap {
+  align-self: center;
+}
+
+.encoder-sim-grid {
+  display: grid;
+  aspect-ratio: 1;
+  gap: 0.32rem;
+  grid-template-columns: repeat(6, 1fr);
+}
+
+.encoder-sim-grid button {
+  border-radius: 32% 68% 36% 64% / 59% 38% 62% 41%;
+  cursor: pointer;
+}
+
+.encoder-sim-grid button[data-selected="true"] {
+  border-color: var(--teal-dark);
+  box-shadow: inset 0 0 0 1.5px var(--teal-dark);
+  transform: scale(1.06);
+}
+
+/* Field guide beneath a lab tool: a grid of short reference cards. */
+.lab-tool-page {
+  width: min(calc(100% - 3rem), 74rem);
+  margin-inline: auto;
+  /* The header glow reaches past this wider column. */
+  overflow-x: clip;
+}
+
+.lab-tool-page .prose {
+  padding-top: 0;
+}
+
+.lab-tool-page .attention-lab {
+  width: 100%;
+  margin: 3rem 0 0;
+  transform: none;
+}
+
+.lab-tool-formula {
+  display: inline-block;
+  margin-top: 1.4rem;
+  padding: 0.5rem 0.8rem;
+  border: 1px solid var(--line-soft);
+  border-radius: 0.4rem;
+  background: rgb(var(--paper-light-rgb) / 0.8);
+  font-family: var(--mono);
+  font-size: 0.78rem;
+}
+
+.lab-guide {
+  margin-top: clamp(4rem, 8vw, 6.5rem);
+}
+
+.lab-guide-header {
+  display: grid;
+  align-items: end;
+  gap: 0.8rem 2rem;
+  padding-bottom: 1.6rem;
+  border-bottom: 1px solid var(--line);
+  grid-template-columns: minmax(0, 1fr) minmax(15rem, 0.6fr);
+}
+
+.lab-guide-header h2 {
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(2.3rem, 4.4vw, 3.6rem);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.lab-guide-header p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.86rem;
+  line-height: 1.65;
+}
+
+.lab-guide-header .attention-lab-kicker {
+  grid-column: 1 / -1;
+}
+
+.lab-guide-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.lab-guide-card {
+  padding: 1.8rem 1.8rem 1.9rem 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.lab-guide-card:nth-child(2n) {
+  padding-right: 0;
+  padding-left: 1.8rem;
+  border-left: 1px solid var(--line-soft);
+}
+
+.lab-guide-card h3 {
+  margin: 0.55rem 0 0;
+  font-family: var(--display);
+  font-size: clamp(1.5rem, 2.4vw, 1.95rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.08;
+}
+
+.lab-guide-card p {
+  margin: 0.7rem 0 0;
+  color: var(--ink-body);
+  font-size: 0.86rem;
+  line-height: 1.7;
+  text-wrap: pretty;
+}
+
+.lab-guide-terms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lab-guide-terms li {
+  padding: 0.38rem 0.66rem;
+  border: 1px solid rgba(22, 48, 46, 0.2);
+  border-radius: 999px;
+  background: rgb(var(--paper-light-rgb) / 0.8);
+  font-family: var(--mono);
+  font-size: 0.52rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.lab-guide-source {
+  display: inline-block;
+  margin-top: 1rem;
+  color: var(--teal);
+  font-family: var(--mono);
+  font-size: 0.56rem;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.lab-guide-source:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 760px) {
+  .lab-tool-page {
+    width: calc(100% - 2rem);
+  }
+
+  .lab-tool-page .attention-lab {
+    width: 100%;
+  }
+
+  .lab-guide-header,
+  .lab-guide-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .lab-guide-card,
+  .lab-guide-card:nth-child(2n) {
+    padding: 1.5rem 0;
+    border-left: 0;
+  }
+
+  .encoder-vector-table {
+    grid-template-columns: minmax(3.4rem, auto) repeat(6, minmax(0, 1fr));
+    gap: 0.2rem;
+  }
+
+  .encoder-vector-table span {
+    min-height: 1.8rem;
+    font-size: 0.48rem;
+  }
+
+  .encoder-shift {
+    padding: 1.1rem;
+  }
+}

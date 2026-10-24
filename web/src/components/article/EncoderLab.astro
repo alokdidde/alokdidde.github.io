@@ -1,0 +1,362 @@
+---
+type EncoderLab = {
+  title?: string;
+  intro?: string;
+};
+
+type Props = EncoderLab | { node: EncoderLab };
+
+const props = Astro.props as Props;
+const item = "node" in props ? props.node : props;
+const title = item.title ?? "Inside a text encoder";
+const intro = item.intro ?? "Follow a sentence from token lookup, through one layer of context, to a single vector you can compare.";
+
+// A toy model with six readable dimensions. Real encoders learn hundreds of
+// unnamed dimensions, but the arithmetic below is the same shape.
+const dims = ["Nature", "Money", "Animal", "Food", "Motion", "Grammar"];
+const vocab: Record<string, number[]> = {
+  "[CLS]": [0.1, 0.1, 0.1, 0.1, 0.1, 0.1],
+  "[SEP]": [0, 0, 0, 0, 0, 0.4],
+  the: [0, 0, 0, 0, 0, 1],
+  a: [0, 0, 0, 0, 0, 1],
+  my: [0, 0, 0, 0, 0, 0.8],
+  by: [0, 0, 0, 0, 0, 0.8],
+  at: [0, 0, 0, 0, 0, 0.8],
+  near: [0, 0, 0, 0, 0, 0.7],
+  we: [0, 0, 0, 0, 0, 0.6],
+  she: [0, 0, 0, 0, 0, 0.6],
+  sat: [0, 0, 0, 0, 0.6, 0.1],
+  river: [1, 0, 0.1, 0, 0.2, 0],
+  bank: [0.5, 0.5, 0, 0, 0, 0],
+  approved: [0, 0.6, 0, 0, 0.2, 0],
+  loan: [0, 1, 0, 0, 0, 0],
+  deposited: [0, 0.8, 0, 0, 0.4, 0],
+  cash: [0, 1, 0, 0, 0, 0],
+  fish: [0.4, 0, 0.7, 0.5, 0.2, 0],
+  swim: [0.5, 0, 0.3, 0, 0.8, 0],
+  dog: [0, 0, 1, 0, 0.1, 0],
+  chased: [0, 0, 0.1, 0, 1, 0],
+  duck: [0.4, 0, 0.9, 0.2, 0.1, 0],
+  cat: [0, 0, 1, 0, 0.1, 0],
+  ate: [0, 0, 0.1, 1, 0.4, 0],
+};
+const contextSentences = ["the bank by the river", "the bank approved my loan"];
+const poolSentences = [
+  "the bank approved my loan",
+  "she deposited cash at the bank",
+  "we sat by the river bank",
+  "fish swim near the river bank",
+  "the dog chased a duck",
+  "a cat ate the fish",
+];
+const model = JSON.stringify({ dims, vocab });
+---
+
+<section class="attention-lab encoder-lab" data-encoder-lab data-model={model} aria-label={title}>
+  <div class="attention-lab-wash" aria-hidden="true"></div>
+  <header class="attention-lab-header">
+    <p class="attention-lab-kicker">Interactive field guide</p>
+    <h2>{title}</h2>
+    <p>{intro}</p>
+  </header>
+
+  <div class="attention-lab-tabs" role="tablist" aria-label="Encoder demonstrations">
+    <button type="button" role="tab" aria-selected="true" data-lab-tab="lookup">Look up</button>
+    <button type="button" role="tab" aria-selected="false" data-lab-tab="context">Read both ways</button>
+    <button type="button" role="tab" aria-selected="false" data-lab-tab="pool">Pool and compare</button>
+  </div>
+
+  <div class="attention-lab-panel" role="tabpanel" data-lab-panel="lookup">
+    <div class="attention-demo-copy">
+      <p class="attention-demo-index">01 / Embeddings</p>
+      <h3>Every token starts as a row in a table.</h3>
+      <div class="attention-chip-row" data-lookup-sentences>
+        {poolSentences.map((sentence, index) => (
+          <button type="button" aria-pressed={index === 2 ? "true" : "false"} data-sentence={sentence}>
+            {sentence.split(" ").slice(0, 3).join(" ")}…
+          </button>
+        ))}
+      </div>
+      <p class="attention-live-note" data-lookup-note aria-live="polite"></p>
+    </div>
+
+    <div class="encoder-vector-table" data-lookup-table aria-label="Token embeddings"></div>
+  </div>
+
+  <div class="attention-lab-panel" role="tabpanel" data-lab-panel="context" hidden>
+    <div class="attention-demo-copy">
+      <p class="attention-demo-index">02 / Bidirectional context</p>
+      <h3>An encoder reads the whole sentence at once.</h3>
+      <div class="attention-chip-row" data-context-sentences>
+        {contextSentences.map((sentence, index) => (
+          <button type="button" aria-pressed={index === 0 ? "true" : "false"} data-sentence={sentence}>
+            {sentence}
+          </button>
+        ))}
+      </div>
+      <div class="attention-chip-row" data-context-masks>
+        <button type="button" aria-pressed="true" data-mask="both">Encoder: both ways</button>
+        <button type="button" aria-pressed="false" data-mask="left">Decoder: left only</button>
+      </div>
+      <p class="attention-live-note" data-context-note aria-live="polite"></p>
+    </div>
+
+    <div class="encoder-context-demo">
+      <div class="encoder-token-row" data-context-tokens aria-label="Select a token"></div>
+      <div class="encoder-shift">
+        <div>
+          <span class="attention-mini-label">Before the layer</span>
+          <div class="encoder-strip" data-before aria-hidden="true"></div>
+        </div>
+        <div>
+          <span class="attention-mini-label">After one layer of attention</span>
+          <div class="encoder-strip" data-after aria-hidden="true"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="attention-lab-panel" role="tabpanel" data-lab-panel="pool" hidden>
+    <div class="attention-demo-copy">
+      <p class="attention-demo-index">03 / Sentence embedding</p>
+      <h3>Pool the tokens into one vector, then compare.</h3>
+      <div class="attention-chip-row" data-pool-modes>
+        <button type="button" aria-pressed="true" data-pool="mean">Mean pooling</button>
+        <button type="button" aria-pressed="false" data-pool="cls">[CLS] token</button>
+      </div>
+      <p class="attention-live-note" data-pool-note aria-live="polite"></p>
+      <ol class="encoder-sentence-list">
+        {poolSentences.map((sentence) => <li>{sentence}</li>)}
+      </ol>
+    </div>
+
+    <div class="attention-matrix-wrap encoder-sim-wrap">
+      <span class="attention-axis attention-axis-y">sentence</span>
+      <span class="attention-axis attention-axis-x">sentence</span>
+      <div class="encoder-sim-grid" data-sim-grid>
+        {poolSentences.flatMap((_, row) =>
+          poolSentences.map((__, column) => (
+            <button
+              type="button"
+              data-row={row}
+              data-column={column}
+              data-sentences={JSON.stringify(poolSentences)}
+              aria-label={`Compare sentence ${row + 1} with sentence ${column + 1}`}
+            ></button>
+          )),
+        )}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  type Model = { dims: string[]; vocab: Record<string, number[]> };
+
+  const TEMPERATURE = 0.25;
+  const dot = (a: number[], b: number[]) => a.reduce((sum, value, index) => sum + value * b[index], 0);
+  const cosine = (a: number[], b: number[]) => dot(a, b) / Math.sqrt(dot(a, a) * dot(b, b));
+  const tokenize = (sentence: string) => ["[CLS]", ...sentence.split(" "), "[SEP]"];
+
+  // One self-attention layer with the embedding standing in for the query, key
+  // and value projections, plus the residual connection.
+  const encode = (model: Model, tokens: string[], leftOnly: boolean) => {
+    const vectors = tokens.map((token) => model.vocab[token]);
+    return vectors.map((query, position) => {
+      const scores = vectors.map((key, other) =>
+        leftOnly && other > position ? -Infinity : dot(query, key) / TEMPERATURE,
+      );
+      const top = Math.max(...scores);
+      const exps = scores.map((score) => Math.exp(score - top));
+      const total = exps.reduce((sum, value) => sum + value, 0);
+      const weights = exps.map((value) => value / total);
+      const output = query.map(
+        (value, dim) => value + vectors.reduce((sum, vector, other) => sum + weights[other] * vector[dim], 0),
+      );
+      return { weights, output };
+    });
+  };
+
+  const cell = (value: number, scale: number, label?: string) => {
+    const node = document.createElement("span");
+    node.style.setProperty("--level", String(Math.min(1, value / scale)));
+    node.textContent = label ?? value.toFixed(2);
+    return node;
+  };
+
+  const press = (buttons: HTMLButtonElement[], active: HTMLButtonElement) =>
+    buttons.forEach((button) => button.setAttribute("aria-pressed", String(button === active)));
+
+  document.querySelectorAll<HTMLElement>("[data-encoder-lab]").forEach((lab) => {
+    const model = JSON.parse(lab.dataset.model ?? "{}") as Model;
+
+    const tabs = [...lab.querySelectorAll<HTMLButtonElement>("[data-lab-tab]")];
+    const panels = [...lab.querySelectorAll<HTMLElement>("[data-lab-panel]")];
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        tabs.forEach((item) => item.setAttribute("aria-selected", String(item === tab)));
+        panels.forEach((panel) => {
+          panel.hidden = panel.dataset.labPanel !== tab.dataset.labTab;
+        });
+      });
+    });
+
+    // 01: embedding lookup
+    const lookupButtons = [...lab.querySelectorAll<HTMLButtonElement>("[data-lookup-sentences] button")];
+    const lookupTable = lab.querySelector<HTMLElement>("[data-lookup-table]");
+    const lookupNote = lab.querySelector<HTMLElement>("[data-lookup-note]");
+
+    const renderLookup = (sentence: string) => {
+      const tokens = tokenize(sentence);
+      const head = [document.createElement("span"), ...model.dims.map((dim) => {
+        const node = document.createElement("span");
+        node.textContent = dim;
+        return node;
+      })];
+      head.forEach((node) => node.classList.add("encoder-dim-label"));
+      const rows = tokens.flatMap((token) => {
+        const label = document.createElement("span");
+        label.className = "encoder-token-label";
+        label.textContent = token;
+        return [label, ...model.vocab[token].map((value) => cell(value, 1))];
+      });
+      lookupTable?.replaceChildren(...head, ...rows);
+      if (lookupNote) {
+        lookupNote.textContent = `${tokens.length} tokens, each replaced by its own row of ${model.dims.length} numbers. [CLS] and [SEP] are added at the start and end. Nothing has looked at its neighbours yet, so a word gets the same row in every sentence.`;
+      }
+    };
+
+    lookupButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        press(lookupButtons, button);
+        renderLookup(button.dataset.sentence ?? "");
+      });
+    });
+    renderLookup(lookupButtons.find((button) => button.getAttribute("aria-pressed") === "true")?.dataset.sentence ?? "");
+
+    // 02: one layer of attention, both ways or left only
+    const sentenceButtons = [...lab.querySelectorAll<HTMLButtonElement>("[data-context-sentences] button")];
+    const maskButtons = [...lab.querySelectorAll<HTMLButtonElement>("[data-context-masks] button")];
+    const tokenRow = lab.querySelector<HTMLElement>("[data-context-tokens]");
+    const before = lab.querySelector<HTMLElement>("[data-before]");
+    const after = lab.querySelector<HTMLElement>("[data-after]");
+    const contextNote = lab.querySelector<HTMLElement>("[data-context-note]");
+    let contextSentence = sentenceButtons[0]?.dataset.sentence ?? "";
+    let leftOnly = false;
+    let focus = 2;
+
+    const strip = (target: HTMLElement | null, vector: number[], scale: number) => {
+      target?.replaceChildren(
+        ...vector.map((value, dim) => {
+          const node = cell(value, scale);
+          node.dataset.dim = model.dims[dim];
+          return node;
+        }),
+      );
+    };
+
+    const renderContext = () => {
+      const tokens = tokenize(contextSentence);
+      const encoded = encode(model, tokens, leftOnly);
+      const { weights, output } = encoded[focus];
+
+      tokenRow?.replaceChildren(
+        ...tokens.map((token, index) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.setAttribute("aria-pressed", String(index === focus));
+          button.style.setProperty("--weight", String(weights[index]));
+          button.dataset.hidden = String(leftOnly && index > focus);
+          const share = document.createElement("span");
+          share.textContent = `${Math.round(weights[index] * 100)}%`;
+          button.append(share, token);
+          button.addEventListener("click", () => {
+            focus = index;
+            renderContext();
+          });
+          return button;
+        }),
+      );
+
+      strip(before, model.vocab[tokens[focus]], 2);
+      strip(after, output, 2);
+
+      if (contextNote) {
+        const nature = output[0];
+        const money = output[1];
+        const leaning = Math.abs(nature - money) < 0.05 ? "still undecided between nature and money" : nature > money ? "leaning towards nature" : "leaning towards money";
+        const hidden = leftOnly && focus < tokens.length - 1 ? ` The ${tokens.length - 1 - focus} tokens to its right are masked out.` : "";
+        contextNote.textContent = `“${tokens[focus]}” spreads its attention over the tokens shown as percentages and comes out ${leaning}.${hidden}`;
+      }
+    };
+
+    sentenceButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        press(sentenceButtons, button);
+        contextSentence = button.dataset.sentence ?? "";
+        focus = Math.min(focus, tokenize(contextSentence).length - 1);
+        renderContext();
+      });
+    });
+    maskButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        press(maskButtons, button);
+        leftOnly = button.dataset.mask === "left";
+        renderContext();
+      });
+    });
+    renderContext();
+
+    // 03: pooling and cosine similarity
+    const poolButtons = [...lab.querySelectorAll<HTMLButtonElement>("[data-pool-modes] button")];
+    const simCells = [...lab.querySelectorAll<HTMLButtonElement>("[data-sim-grid] button")];
+    const poolNote = lab.querySelector<HTMLElement>("[data-pool-note]");
+    const sentences = JSON.parse(simCells[0]?.dataset.sentences ?? "[]") as string[];
+    let pool = "mean";
+    let pair = [0, 2];
+
+    const renderPool = () => {
+      const pooled = sentences.map((sentence) => {
+        const outputs = encode(model, tokenize(sentence), false).map((entry) => entry.output);
+        if (pool === "cls") return outputs[0];
+        const words = outputs.slice(1, -1);
+        return model.dims.map((_, dim) => words.reduce((sum, vector) => sum + vector[dim], 0) / words.length);
+      });
+      const scores = pooled.map((a) => pooled.map((b) => cosine(a, b)));
+      const low = Math.min(...scores.flat());
+
+      simCells.forEach((node) => {
+        const row = Number(node.dataset.row);
+        const column = Number(node.dataset.column);
+        const score = scores[row][column];
+        node.style.setProperty("--level", String((score - low) / (1 - low || 1)));
+        node.textContent = score.toFixed(2);
+        node.dataset.selected = String(row === pair[0] && column === pair[1]);
+      });
+
+      if (poolNote) {
+        const score = scores[pair[0]][pair[1]].toFixed(2);
+        const spread = `Scores on this grid run from ${low.toFixed(2)} to 1.00.`;
+        const method = pool === "cls"
+          ? "Here the [CLS] token's output is the sentence vector. It is untrained in this toy, so it blurs everything together; a real model trains [CLS] to summarise."
+          : "Here the sentence vector is the average of the word outputs.";
+        poolNote.textContent = `Sentences ${pair[0] + 1} and ${pair[1] + 1} have cosine similarity ${score}. ${spread} ${method}`;
+      }
+    };
+
+    poolButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        press(poolButtons, button);
+        pool = button.dataset.pool ?? "mean";
+        renderPool();
+      });
+    });
+    simCells.forEach((node) => {
+      node.addEventListener("click", () => {
+        pair = [Number(node.dataset.row), Number(node.dataset.column)];
+        renderPool();
+      });
+    });
+    renderPool();
+  });
+</script>

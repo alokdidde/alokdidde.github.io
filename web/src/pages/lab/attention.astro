@@ -1,34 +1,124 @@
 ---
 import AttentionLab from "../../components/article/AttentionLab.astro";
+import LabGuide from "../../components/LabGuide.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { labTools } from "../../data/lab";
 
 const tool = labTools.find((entry) => entry.slug === "attention")!;
+
+const questions = [
+  {
+    index: "01 / Scoring",
+    title: "How is relevance measured?",
+    body: "The rule that scores a query against a key. Scaled dot product maps cleanly onto matrix multiplication; additive attention uses a small learned network; cosine attention compares direction only.",
+    terms: ["Scaled dot product", "Additive", "Cosine"],
+    source: { title: "Attention Is All You Need", url: "https://arxiv.org/abs/1706.03762" },
+  },
+  {
+    index: "02 / Connectivity",
+    title: "Who may look where?",
+    body: "The mask decides which pairs exist. Full attention fills the square, causal attention is a triangle that hides the future, local attention is a band near the diagonal. Cross-attention takes keys and values from another sequence.",
+    terms: ["Full", "Causal", "Local", "Sliding window", "Cross"],
+    source: { title: "Swin Transformer", url: "https://arxiv.org/abs/2103.14030" },
+  },
+  {
+    index: "03 / Heads and cache",
+    title: "What do the query heads share?",
+    body: "MHA gives every query head its own key and value head. MQA shares one across all of them, GQA shares one per group. MLA compresses keys and values into a smaller latent instead. Each trades KV-cache memory against variety.",
+    terms: ["MHA", "GQA", "MQA", "MLA"],
+    source: { title: "GQA", url: "https://arxiv.org/abs/2305.13245" },
+  },
+  {
+    index: "04 / Growth",
+    title: "What grows with input length?",
+    body: "Full attention compares n × n pairs, so doubling the input can quadruple the work. Local and sparse patterns compare fewer pairs; linear attention keeps a running state instead of the full matrix, with different recall behaviour.",
+    terms: ["Full matrix", "Sparse", "Linear state", "Hybrid"],
+    source: { title: "Kimi Linear", url: "https://arxiv.org/abs/2510.26692" },
+  },
+  {
+    index: "05 / Execution",
+    title: "How is it run and stored?",
+    body: "FlashAttention computes exact attention but tiles the work so it stays in fast on-chip memory. PagedAttention manages the serving KV cache in blocks. Neither changes which token attends to which.",
+    terms: ["FlashAttention", "PagedAttention", "Basic kernel"],
+    source: { title: "FlashAttention", url: "https://arxiv.org/abs/2205.14135" },
+  },
+  {
+    index: "06 / Position",
+    title: "How does order enter?",
+    body: "Plain attention sees a set. Sinusoidal and learned embeddings add a vector per position; RoPE rotates query and key features so their dot product carries relative position.",
+    terms: ["RoPE", "Sinusoidal", "Learned"],
+    source: { title: "RoFormer", url: "https://arxiv.org/abs/2104.09864" },
+  },
+  {
+    index: "07 / Domain",
+    title: "What structure does the input have?",
+    body: "Text is a sequence, images are patch grids, video adds time, graphs define neighbours by edges. The mask and position scheme should respect that structure.",
+    terms: ["Text", "Image", "Video", "Graph"],
+  },
+] as const;
+
+const models = [
+  {
+    index: "Model / Llama 3",
+    title: "Causal + GQA + RoPE",
+    body: "A decoder language model. Its choices sit on three different axes, connectivity, heads and position, so they combine rather than compete.",
+    terms: ["Connectivity", "Heads and cache", "Position"],
+    source: { title: "The Llama 3 Herd of Models", url: "https://ai.meta.com/research/publications/the-llama-3-herd-of-models/" },
+  },
+  {
+    index: "Model / DeepSeek-V3",
+    title: "Multi-head latent attention",
+    body: "MLA shrinks the key-value representation used during inference. That is mainly a heads-and-cache decision inside a much larger architecture.",
+    terms: ["Heads and cache"],
+    source: { title: "DeepSeek-V3 Technical Report", url: "https://arxiv.org/abs/2412.19437" },
+  },
+  {
+    index: "Model / Kimi Linear",
+    title: "Linear layers with occasional full attention",
+    body: "Recurrent Kimi Delta Attention layers mixed with full MLA layers. It changes how work and memory grow at long context while keeping some full attention.",
+    terms: ["Growth", "Heads and cache"],
+    source: { title: "Kimi Linear", url: "https://arxiv.org/abs/2510.26692" },
+  },
+  {
+    index: "Checklist / New paper",
+    title: "Seven answers for every new name",
+    body: "Which scoring rule changed? Which connections are allowed? How many heads, and what is cached? How does cost grow? Is it maths, a kernel or memory management? Where does position enter? What structure is the input?",
+  },
+] as const;
 ---
 
 <BaseLayout title={tool.title} description={tool.summary}>
-  <article class="measure page-main">
+  <div class="page-main lab-tool-page">
     <a class="back-link" href="/lab">← All tools</a>
-    <header class="article-header">
-      <span class="post-date">Lab / {tool.kind}</span>
+    <header class="page-header">
+      <p class="section-label">Lab / {tool.kind}</p>
       <h1>{tool.title}</h1>
-      <p class="article-summary">{tool.summary}</p>
-      <div class="tag-row" aria-label="Tags">
-        {tool.tags.map((tag) => <span class="tag">{tag}</span>)}
-      </div>
+      <p class="page-intro">
+        Every attention variant keeps the same engine: queries are scored against keys, the scores become
+        weights, and the weights mix the values. The names differ in which of seven questions they answer.
+      </p>
+      <code class="lab-tool-formula">softmax(QKᵀ / √d) V</code>
     </header>
 
     <div class="prose">
-      <AttentionLab title={tool.title} intro="Change one design choice at a time and watch what it changes." />
-      <p>
-        The ideas behind this tool are explained in
-        <a href={tool.relatedPost.href}>{tool.relatedPost.title}</a>.
-      </p>
+      <AttentionLab
+        title="Build an attention mechanism"
+        intro="Change the mask, share the key-value cache, then assemble choices across all seven parts of the design."
+      />
     </div>
 
-    <footer class="article-footer">
-      <p class="article-end-mark" aria-hidden="true">✳</p>
-      <a class="back-link article-footer-back" href="/lab">← All tools</a>
-    </footer>
-  </article>
+    <LabGuide
+      kicker="Field guide"
+      title="The seven questions"
+      intro="Use these to place any attention name. FlashAttention is execution, RoPE is position, GQA is heads and cache."
+      items={questions}
+    />
+
+    <LabGuide
+      kicker="Read a model"
+      title="Models are stacks of choices"
+      intro="A model name rarely maps to one attention type. Read it as one answer per axis."
+      items={models}
+    />
+  </div>
 </BaseLayout>
